@@ -1,0 +1,28 @@
+<h1>Edit User</h1>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" value="{{ user.username }}" required>
+    
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{ user.email }}" required>
+    
+    <label for="role">Role:</label>
+    <select id="role" name="role" required>
+        <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+        <option value="doctor" {% if user.role == 'doctor' %}selected{% endif %}>Doctor</option>
+        <option value="desk" {% if user.role == 'desk' %}selected{% endif %}>Desk</option>
+        <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+    </select>
+
+    <button type="submit">Update User</button>
+</form>

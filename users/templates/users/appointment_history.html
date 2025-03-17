@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>My Appointment History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { padding: 0; margin: 0; font-family: "Fredoka", sans-serif; letter-spacing: 1px; }
+        body { 
+            background-image: url('{% static "img/backgrd.svg" %}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 100vh; 
+        }
+        .container { 
+            background-color: rgba(255, 255, 255, 0.1); 
+            border-radius: 30px; 
+            border: 2px solid rgba(211, 211, 211, 0.2); 
+            backdrop-filter: blur(8px); 
+            padding: 20px; 
+            width: 95vw; 
+            margin: 20px auto; 
+            max-height: 80vh; 
+            overflow-y: auto; /* Scrollbar for overflow */
+        }
+        h1 { 
+            color: white; 
+            text-align: center; 
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+            margin-bottom: 20px; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+        }
+        th, td { 
+            padding: 10px; 
+            text-align: left; 
+            color: white; 
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+        }
+        th { 
+            background-color: rgba(0, 225, 225, 0.7); 
+        }
+        tr { 
+            background-color: rgba(255, 255, 255, 0.2); 
+        }
+        tr.pending-row:hover { 
+            cursor: pointer; 
+            background-color: rgba(255, 165, 0, 0.3); 
+        }
+        .status-pending { color: orange; font-weight: bold; }
+        .status-treated { color: green; font-weight: bold; }
+        .back-btn, .history-btn { 
+            padding: 8px 16px; 
+            background-color: rgb(0, 225, 225); 
+            color: black; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+            margin-top: 10px; 
+        }
+        .back-btn:hover, .history-btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Appointment History</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                    <tr class="{% if appointment.status == 'Pending' %}pending-row{% endif %}" 
+                        data-id="{{ appointment.id }}" 
+                        {% if appointment.status == 'Pending' %}onclick="window.location.href='{% url 'live_wait_time_detail' appointment.id %}'"{% endif %}>
+                        <td>{{ appointment.patient_name }}</td>
+                        <td>{{ appointment.doctor.name }}</td>
+                        <td>{{ appointment.date }}</td>
+                        <td>{{ appointment.time }}</td>
+                        <td class="status-{{ appointment.status|lower }}">{{ appointment.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'user_dashboard' %}" class="back-btn">Back to Dashboard</a>
+        <a href="{% url 'appointment_history' %}" class="history-btn">Go to Appointment History</a>
+    </div>
+</body>
+</html>

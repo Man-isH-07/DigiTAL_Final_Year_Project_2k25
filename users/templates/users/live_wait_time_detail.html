@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+< lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Live Wait Time - {{ appointment.patient_name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { padding: 0; margin: 0; font-family: "Fredoka", sans-serif; letter-spacing: 1px; }
+        body { 
+            background-image: url('{% static "img/backgrd.svg" %}'); 
+            background-size: cover; 
+            background-position: center; 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        .container { 
+            background-color: rgba(255, 255, 255, 0.1); 
+            border-radius: 30px; 
+            border: 2px solid rgba(211, 211, 211, 0.2); 
+            backdrop-filter: blur(8px); 
+            padding: 20px; 
+            width: 90vw; 
+            max-width: 500px; 
+            text-align: center; 
+            color: white; 
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+        }
+        h1 { margin-bottom: 20px; }
+        .timer { 
+            font-size: 3em; 
+            font-weight: bold; 
+            animation: pulse 2s infinite; 
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .details { margin: 20px 0; }
+        .back-btn, .refresh-btn { 
+            padding: 10px 20px; 
+            background-color: rgb(0, 225, 225); 
+            color: black; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            margin: 5px; 
+        }
+        .back-btn:hover, .refresh-btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live Wait Time for {{ appointment.patient_name }}</h1>
+        <div class="details">
+            <p>Doctor: {{ appointment.doctor.name }}</p>
+            <p>Date: {{ appointment.date }}</p>
+            <p>Time: {{ appointment.time }}</p>
+            <p>Status: <span class="status-{{ appointment.status|lower }}">{{ appointment.status }}</span></p>
+        </div>
+        {% if session_active and appointment.status == 'Pending' %}
+            <div class="timer" id="liveTimer">00:00</div>
+            <button class="refresh-btn" onclick="refreshTimer()">Refresh Timer</button>
+        {% else %}
+            <p style="font-size: 1.5em; color: #ff6b6b;">Session not started. Wait time will be available once the session begins.</p>
+        {% endif %}
+        <a href="{% url 'appointment_history' %}" class="back-btn">Back to Appointment History</a>
+        <!-- Debug: Render variables to inspect in the DOM -->
+        <div style="display: none;" id="debug-data" 
+             data-initial-wait-time="{{ initial_wait_time_seconds|default:0 }}" 
+             data-appointment-id="{{ appointment.id|default:0 }}">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Get values from the DOM
+        const debugData = document.getElementById('debug-data');
+        const initialWaitTimeSeconds = parseInt(debugData.dataset.initialWaitTime) || 0;
+        const appointmentId = parseInt(debugData.dataset.appointmentId) || 0;
+
+        let remainingSeconds = initialWaitTimeSeconds; // Already in seconds
+        let timerInterval = null;
+
+        function updateTimer() {
+            if (remainingSeconds <= 0) {
+                document.getElementById('liveTimer').textContent = '00:00';
+                clearInterval(timerInterval);
+                return;
+            }
+
+            let minutes = Math.floor(remainingSeconds / 60);
+            let seconds = remainingSeconds % 60;
+            document.getElementById('liveTimer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            remainingSeconds--;
+        }
+
+        // Start the timer only if session is active and initial wait time is set
+        if (initialWaitTimeSeconds > 0) {
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        // Function to sync with server
+        function syncWithServer() {
+            $.get("{% url 'fetch_wait_times' %}", function(data) {
+                let updated = false;
+                data.wait_times.forEach(function(entry) {
+                    if (entry.id === appointmentId && entry.status === 'Pending') {
+                        let newWaitTime = entry.wait_time; // Already in seconds
+                        if (newWaitTime !== remainingSeconds) {
+                            remainingSeconds = newWaitTime;
+                            updated = true;
+                            console.log(`Updated wait time for appointment ${appointmentId} to ${newWaitTime} seconds`);
+                        }
+                    }
+                });
+                if (!updated) {
+                    console.log(`No update found for appointment ${appointmentId}`);
+                }
+                updateTimer(); // Update display immediately after sync
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error syncing wait times:', error);
+            });
+        }
+
+        // Sync with server every 10 seconds if session is active
+        if (initialWaitTimeSeconds > 0) {
+            setInterval(syncWithServer, 10000);
+            syncWithServer(); // Initial sync
+        }
+
+        // Refresh button handler
+        function refreshTimer() {
+            syncWithServer();
+        }
+    </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91eb9033ca667ba5',t:'MTc0MTcwMTQ3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+
+</html>

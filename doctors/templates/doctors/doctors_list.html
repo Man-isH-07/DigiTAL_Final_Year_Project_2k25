@@ -1,0 +1,11 @@
+<h2>Our Doctors</h2>
+<div>
+    {% for doctor in doctors %}
+        <div>
+            <img src="{{ doctor.image.url }}" alt="{{ doctor.name }}">
+            <h3>{{ doctor.name }}</h3>
+            <p>{{ doctor.specialization }}</p>
+            <p>Experience: {{ doctor.experience }} years</p>
+        </div>
+    {% endfor %}
+</div>

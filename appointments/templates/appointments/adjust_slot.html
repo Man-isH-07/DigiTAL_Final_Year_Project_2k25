@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjust Doctor Slot | DigiTAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { padding: 0; margin: 0; font-family: "Fredoka", sans-serif; letter-spacing: 1px; }
+        body { background-image: url('{% static "img/backgrd.svg" %}'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: rgba(255, 255, 255, 0.1); border-radius: 30px; border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); padding: 20px; width: 50vw; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { color: white; margin-right: 10px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
+        .form-group select, .form-group input { padding: 8px; border-radius: 5px; border: 1px solid #ddd; }
+        button { padding: 8px 16px; background-color: rgb(0, 225, 225); color: black; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: rgb(115, 255, 255); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="color: white; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;">Adjust Doctor Slot Time</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="doctor_id">Doctor:</label>
+                <select name="doctor_id" id="doctor_id" required>
+                    <option value="">Select Doctor</option>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.id }}">Dr. {{ doctor.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" name="date" id="date" required>
+            </div>
+            <div class="form-group">
+                <label for="hours">Add Hours:</label>
+                <select name="hours" id="hours" required>
+                    <option value="0">0 Hours</option>
+                    <option value="1">1 Hour</option>
+                    <option value="2">2 Hours</option>
+                </select>
+            </div>
+            <button type="submit">Adjust Slot</button>
+        </form>
+    </div>
+</body>
+</html>

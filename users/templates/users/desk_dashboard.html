@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Dashboard | DigiTAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Fredoka", sans-serif;
+            letter-spacing: 1px;
+        }
+
+        body {
+            background-image: url('{% static "img/backgrd.svg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .top-bar {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px;
+            text-align: center;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: white;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #e65b5b;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+        }
+
+        .section {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section h3 {
+            color: #00e1e1;
+            margin-bottom: 15px;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .book-appointment input,
+        .book-appointment select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .book-appointment button {
+            width: 100%;
+            padding: 10px;
+            background-color: #00e1e1;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .book-appointment button:hover {
+            background-color: #00cccc;
+        }
+
+        .virtual-waiting-room {
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .virtual-waiting-room p {
+            color: white;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            margin-bottom: 15px;
+        }
+
+        .virtual-waiting-room a {
+            display: block;
+            padding: 10px;
+            background-color: #00e1e1;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .virtual-waiting-room a:hover {
+            background-color: #00cccc;
+        }
+
+        .virtual-waiting-room img {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .adjust-slot {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .adjust-slot a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #00e1e1;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .adjust-slot a:hover {
+            background-color: #00cccc;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .messages .success {
+            color: #28a745;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .messages .error {
+            color: #dc3545;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .section {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .adjust-slot {
+                margin-top: 20px;
+                width: 100%;
+            }
+
+            .top-bar {
+                width: 100%;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar for Date and Time -->
+    <div class="top-bar" id="topBar">
+        <div><b>Today:</b> <span id="todayDate"></span></div>
+        <div><b>Time:</b> <span id="liveTime"></span></div>
+    </div>
+
+    <center>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">DigiTAL</div>
+            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+        </div>
+
+        <!-- Display Messages -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p class="{{ message.tags }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Book an Appointment Section -->
+            <div class="section book-appointment">
+                <h3>Book an Appointment</h3>
+                <form method="post" action="{% url 'desk_dashboard' %}">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Enter Patient Name" required>
+                    <input type="email" name="email" placeholder="Enter Email" required>
+                    <input type="text" name="phone" placeholder="Enter Phone Number" required>
+                    <input type="date" name="date" id="appointment_date" required>
+                    <select name="doctor_id" id="doctor-select" required>
+                        <option value="">Select Doctor</option>
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}" data-slots="{{ doctor.available_slots }}">
+                                Dr. {{ doctor.name }} ({{ doctor.specialization }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <select name="time" id="time-select" required>
+                        <option value="">Select Slot</option>
+                        <!-- Slots will be populated dynamically via JavaScript -->
+                    </select>
+                    <button type="submit">Book Appointment</button>
+                </form>
+            </div>
+
+            <!-- Virtual Waiting Room Section -->
+            <div class="section virtual-waiting-room">
+                <h3>Virtual Waiting Room</h3>
+                <img src="{% static 'img/wait_time.gif' %}" alt="Waiting Animation">
+                <p>Check the live waiting status and manage the queue.</p>
+                <a href="{% url 'virtual_waiting_room' %}">Go to Virtual Waiting Room</a>
+            </div>
+        </div>
+
+        <!-- Adjust Slot Section -->
+        <div class="adjust-slot">
+            <a href="{% url 'adjust_doctor_slot' %}" class="slot-btn">Adjust Doctor Slot Time</a>
+        </div>
+    </div>
+    </center>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Set the date input to today's date by default
+            var today = new Date();
+            var todayFormatted = today.toISOString().split('T')[0];
+            $('#appointment_date').val(todayFormatted);
+
+            // Dynamically load doctor slots when a doctor is selected
+            $('#doctor-select').change(function() {
+                let selectedDoctor = this.options[this.selectedIndex];
+                let availableSlots = selectedDoctor.getAttribute("data-slots").split(",");
+
+                let timeSelect = $('#time-select');
+                timeSelect.empty(); // Clear previous options
+                timeSelect.append('<option value="">Select Slot</option>');
+
+                if (availableSlots.length > 0 && availableSlots[0] !== "") {
+                    availableSlots.forEach(function(slot) {
+                        timeSelect.append('<option value="' + slot + '">' + slot + '</option>');
+                    });
+                } else {
+                    timeSelect.append('<option value="">No slots available</option>');
+                }
+            });
+
+            // Update live date and time
+            function updateTopBar() {
+                var today = new Date();
+                $('#todayDate').text(today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+                $('#liveTime').text(today.toLocaleTimeString());
+                setTimeout(updateTopBar, 1000);
+            }
+            updateTopBar();
+        });
+    </script>
+</body>
+</html>

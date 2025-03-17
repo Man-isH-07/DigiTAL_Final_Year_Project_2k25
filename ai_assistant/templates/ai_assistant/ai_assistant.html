@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant | DigiTAL</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: "Fredoka", sans-serif;
+            background-image: url('{% static "img/backgrd.svg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        #botui-app {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 500px;
+            z-index: 1000;
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #00e1e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+        #chatbot-toggle i {
+            color: white;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div id="botui-app">
+        <div id="botui"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/botui/build/botui.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        var botui = new BotUI('botui', {
+            vue: window.Vue || {}
+        });
+
+        function toggleChatbot() {
+            var chatbot = document.getElementById('botui-app');
+            if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+                chatbot.style.display = 'block';
+                startConversation();
+            } else {
+                chatbot.style.display = 'none';
+            }
+        }
+
+        function startConversation() {
+            botui.message.add({
+                content: 'Hello! I’m DigiTAL’s AI Assistant. How can I help you today? (e.g., "I have a headache" or "Book an appointment")'
+            }).then(() => {
+                botui.message.add({
+                    delay: 1000,
+                    content: 'Type "exit" to end the chat.'
+                });
+            });
+
+            botui.action.text({
+                action: {
+                    placeholder: 'Type your response...'
+                }
+            }).then(res => {
+                handleResponse(res.value);
+            });
+        }
+
+        function handleResponse(response) {
+            if (response.toLowerCase() === 'exit') {
+                botui.message.add({
+                    content: 'Goodbye! Feel free to chat with me anytime.'
+                });
+                document.getElementById('botui-app').style.display = 'none';
+                return;
+            }
+
+            botui.message.add({
+                content: 'Processing your request...'
+            });
+
+            if (response.toLowerCase().includes('book') || response.toLowerCase().includes('appointment')) {
+                bookAppointmentFlow();
+            } else {
+                analyzeSymptoms(response);
+            }
+        }
+
+        function analyzeSymptoms(symptoms) {
+            $.get('/ai_assistant/analyze_symptoms/', { symptoms: symptoms }, function(data) {
+                if (data.error) {
+                    botui.message.add({
+                        content: data.error
+                    });
+                } else {
+                    botui.message.add({
+                        content: 'Based on your symptoms, I found these doctors:'
+                    });
+                    data.doctors.forEach(doctor => {
+                        botui.message.add({
+                            delay: 500,
+                            content: `${doctor.name} (${doctor.specialization}) - Slots: ${doctor.slots.join(', ')}`
+                        });
+                    });
+                    bookAppointmentFlow();
+                }
+                botui.action.text({
+                    action: {
+                        placeholder: 'Type your response...'
+                    }
+                }).then(res => handleResponse(res.value));
+            });
+        }
+
+        function bookAppointmentFlow() {
+            botui.message.add({
+                content: 'Would you like to book an appointment? Please provide: Name, Email, Phone, Doctor ID, Date (YYYY-MM-DD), Time (HH:MM). Example: "John Doe, john@example.com, 1234567890, 1, 2025-03-16, 09:00"'
+            });
+            botui.action.text({
+                action: {
+                    placeholder: 'Enter details...'
+                }
+            }).then(res => {
+                const [name, email, phone, doctor_id, date, time] = res.value.split(',').map(item => item.trim());
+                if (!name || !email || !phone || !doctor_id || !date || !time) {
+                    botui.message.add({
+                        content: 'Invalid format. Please use: Name, Email, Phone, Doctor ID, Date, Time.'
+                    });
+                    bookAppointmentFlow();
+                    return;
+                }
+                $.post('/ai_assistant/book_appointment/', {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    doctor_id: doctor_id,
+                    date: date,
+                    time: time
+                }, function(data) {
+                    if (data.error) {
+                        botui.message.add({
+                            content: data.error
+                        });
+                    } else {
+                        botui.message.add({
+                            content: data.message
+                        });
+                    }
+                    botui.action.text({
+                        action: {
+                            placeholder: 'Type your response...'
+                        }
+                    }).then(res => handleResponse(res.value));
+                });
+            });
+        }
+    </script>
+</body>
+</html>

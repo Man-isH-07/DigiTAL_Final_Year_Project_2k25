@@ -1,0 +1,966 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User's Page | DigiTAL</title>
+
+    <link rel="icon" href="img\redketchup\android-chrome-512x512.png" type="image/icon type">
+
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+    <!-- fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+    padding: 0;
+    margin: 0;
+    border: none;
+    text-decoration: none;
+    font-family: "Fredoka", sans-serif;
+    letter-spacing: 1px;
+}
+
+body {
+    background-image: url('{% static "img/backgrd.svg" %}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#hero {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 0;
+}
+
+.hero-section-container {
+    margin: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    height: fit-content;
+    width: 90vw;
+    border-radius: 30px;
+    border: 2px solid rgba(211, 211, 211, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 15px;
+    margin: 20px;
+    z-index: 1;
+}
+
+.logoutBtn
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: lightcoral;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    width: 5vw;
+}
+
+.logoutBtn:hover
+{
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.logoutBtn a
+{
+    color: white;
+    font-weight: bolder;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.logo {
+    font-size: 40px;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.logo span {
+    color: rgb(0, 225, 225);
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.add_pat {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 6px 14px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: rgb(0, 225, 225);
+    color: black;
+    border: none;
+    cursor: pointer;
+    height: fit-content;
+    width: fit-content;
+    font-size: large;
+}
+
+.add_pat:hover {
+    background-color: rgb(115, 255, 255);
+    color: black;
+    font-weight: bold;
+}
+
+#video,
+#canvas {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+
+
+
+.desk-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.add-patient-form {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    width: 30vw;
+}
+
+.add-patient-form:hover {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    width: 60vw;
+}
+
+
+.patient-list {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    width: 30%;
+}
+
+.add-patient-form h3,
+.patient-list h3 {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.group {
+    display: flex;
+    justify-content: space-around;
+}
+
+form label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: small;
+    font-weight: 400;
+}
+
+form input,
+form select,
+form textarea {
+    width: 30%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-weight: 500;
+}
+
+.patient-list {
+    width: 30vw;
+    max-height: 500px;
+    overflow-y: auto;
+    border: none;
+    border-radius: 10px;
+}
+
+.patient-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+.edit-btn,
+.delete-btn {
+    background-color: #007bff;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+    opacity: 0.8;
+}
+
+
+
+
+
+.user-page {
+    text-align: center;
+}
+
+.title {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+/* Container for the animated boxes */
+.options-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 15px;
+}
+
+/* Styling each option box */
+.option-box {
+    width: 300px;
+    height: 300px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.option-box h2 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.option-box p {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Buttons inside the option boxes */
+.option-box .btn {
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.option-box .btn:hover {
+    background-color: white;
+}
+
+/* Hover animations for boxes */
+.option-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Specific styling for each box */
+.manual-booking {
+    background: rgb(220, 255, 255);
+    color: #fff;
+}
+
+.manual-booking img
+{
+    background-color: white;
+    width: 15vw;
+    height: 30vh;
+    border: none;
+    border-radius: 30%;
+}
+
+.ai-booking {
+    background: linear-gradient(135deg, #cd9eff, #a3afc5);
+    color: #fff;
+}
+
+.live_wait {
+    background: rgb(220, 255, 255);
+    color: #fff;
+}
+
+.live_wait img
+{
+    background-color: white;
+    width: 15vw;
+    height: 30vh;
+    border: none;
+    border-radius: 30%;
+}
+
+.patient-report {
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    color: #fff;
+}
+
+
+
+
+/* Features Section */
+.features-section {
+    padding: 20px;
+    margin: 20px;
+    background-color: #e3f2fd;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.features-section h2 {
+    margin: 0px 0px 20px 0px;
+}
+
+
+.features-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.feature-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+}
+
+.feature-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.feature-box img {
+    background: #fff9f9;
+    padding: 20px;
+    margin: 5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.feature-box h3 {
+    color: #333;
+}
+
+.feature-box p {
+    color: #555;
+}
+
+/* Services Section */
+.services-section {
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    background-color: #e3f2fd;
+    text-align: center;
+    
+}
+.services-section h2 {
+    margin: 0px 0px 20px 0px;
+}
+
+.services-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.service-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+}
+
+.service-box:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.service-box img {
+    background: #fff9f9;
+    padding: 20px;
+    margin: 5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Doctors Section */
+.doctors-section {
+    padding: 30px;
+    background-color: #e3f2fd;
+    text-align: center;
+    margin: 20px;
+    border-radius: 10px;
+}
+.doctors-section h2 {
+    margin: 0px 0px 20px 0px;
+}
+
+.doctors-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.doctor-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+}
+
+.doctor-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.doctor-card img {
+    width: 100%;
+    border-radius: 50%;
+    margin-bottom: 15px;
+}
+
+.doctor-card h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Footer Section */
+.footer-section {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+/* Hero Section Animation */
+@keyframes sideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes sideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes topIn {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes bottomIn {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
+header {
+    animation: topIn 1.2s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
+}
+
+.login-container {
+    animation: sideInLeft 1s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.8s;
+}
+#chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #00e1e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+        #chatbot-toggle i {
+            color: white;
+            font-size: 24px;
+        }
+        #botui-app {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 400px;
+            height: 500px;
+            z-index: 1000;
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <!--Hero section-->
+    <section id="hero">
+        <div class="hero-section-container">
+            <header>
+
+                <a class="logo" href="#hero">Digi<span>TAL</span></a> <!--Left Section-->
+                <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
+
+            </header>
+
+            <div class="user-page">
+                <h1 class="title">Welcome to DigiTAL</h1>
+                <div class="options-container">
+                    <!-- Manual Booking Box -->
+                    <a href="{% url 'manual_booking' %}">
+                        <div class="option-box manual-booking">
+                        <img src="{% static 'img/manual_booking.gif' %}" alt="">
+                        <h2>Manual Booking</h2>
+                        <p>Book your appointment manually with ease.</p>
+                    </div>
+                </a>
+
+                    <!-- AI-Based Booking Box -->
+                    <div class="option-box ai-booking">
+                        <h2>AI-Based Booking</h2>
+                        <p>Let AI help you find the best available slots.</p>
+                        <a href="/"><button class="btn"><img src="{% static 'img/down.gif' %}" alt=""></button></a>
+                        <h2 style="color: white; margin-top: 10px;">Not Yet Done...Coming Soon</h2>
+                    </div>
+
+                    <a href="{% url 'appointment_history' %}">
+
+                    <div class="option-box live_wait">
+                        <img src="{% static 'img/wait_time.gif' %}" alt="">
+                        <h2>Live Waiting Time And Past Visits</h2>
+                        <p>Easy access to previous visits.</p>
+                        
+                    </div>
+                </a>
+
+                    <!-- Patient's Report Box -->
+
+                </div>
+            </div>
+
+
+
+            <!-- Our Features Section -->
+            <section id="features" class="features-section">
+                <h2>Our Features</h2>
+                <div class="features-container">
+                    <div class="feature-box">
+                        <img src="{% static 'img/appointment.gif' %}" alt="Doctor 1">
+                        <h3>Online Appointments</h3>
+                        <p>Book appointments easily with our user-friendly platform.</p>
+                    </div>
+                    <div class="feature-box">
+                        <img src="{% static 'img/prescription.gif' %}" alt="Doctor 1">
+                        <h3>Digital Prescriptions</h3>
+                        <p>Access your prescriptions digitally anytime, anywhere.</p>
+                    </div>
+                    <div class="feature-box">
+                        <img src="{% static 'img/queue.gif' %}" alt="Doctor 1">
+                        <h3>Virtual Waiting Room</h3>
+                        <p>Know your turn in real-time with our virtual waiting room.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section id="services" class="services-section">
+                <h2>Our Services</h2>
+                <div class="services-container">
+                    <div class="service-box">
+                        <img src="{% static 'img/checkup.gif' %}" alt="Doctor 1">
+                        <h3>General Checkup</h3>
+                        <p>Comprehensive health checkups for all ages.</p>
+                    </div>
+                    <div class="service-box">
+                        <img src="{% static 'img/special.gif' %}" alt="Doctor 1">
+                        <h3>Specialized Consultation</h3>
+                        <p>Consult with experienced specialists in various fields.</p>
+                    </div>
+                    <div class="service-box">
+                        <img src="{% static 'img/lab.gif' %}" alt="Doctor 1">
+                        <h3>Lab Testing</h3>
+                        <p>Get accurate , Paperless and timely lab tests.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Know Our Doctors Section -->
+            <section id="doctors" class="doctors-section">
+                <h2>Know Our Doctors</h2>
+                <div class="doctors-container">
+                    <div class="doctor-card">
+                        <img src="{% static 'img/doctor1.jpg' %}" alt="Doctor 1">
+                        <h3>Dr. Rajesh Kumar</h3>
+                        <p>Cardiologist with 15 years of experience.</p>
+                    </div>
+                    <div class="doctor-card">
+                        <img src="{% static 'img/doctor1.jpg' %}" alt="Doctor 2">
+                        <h3>Dr. Sneha Sharma</h3>
+                        <p>Pediatrician specializing in child care.</p>
+                    </div>
+                    <div class="doctor-card">
+                        <img src="{% static 'img/doctor1.jpg' %}" alt="Doctor 3">
+                        <h3>Dr. Anil Mehta</h3>
+                        <p>Orthopedic surgeon with 10+ years of expertise.</p>
+                    </div>
+                    
+                </div>
+            </section>
+
+            <!-- Footer Section -->
+            <footer id="footer" class="footer-section">
+                <p>&copy; 2024 DigiTAL . All Rights Reserved.</p>
+                </ul>
+            </footer>
+        </div>
+    </section>
+
+    <!-- Include the chatbot toggle button -->
+    <div id="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Include the chatbot popup -->
+    <div id="botui-app">
+        <div id="botui"></div>
+    </div>
+
+    <script>
+        // Access the video element and canvas
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('captureButton');
+        let stream;
+
+        // Access the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((mediaStream) => {
+                stream = mediaStream;
+                video.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing the camera:', error);
+            });
+
+        // Capture photo on button click
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'block';
+
+            // Convert canvas image to data URL if needed
+            const photoData = canvas.toDataURL('image/png');
+            console.log(photoData); // Save or send this image data
+
+            // Stop the video stream to turn off the camera
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            video.style.display = 'none'; // Hide video after capturing the photo
+        });
+
+
+
+
+        // JavaScript for navigating to respective pages
+        document.querySelector('.manual-booking .btn').addEventListener('click', () => {
+            window.location.href = 'manual_booking.html';
+        });
+
+        // document.querySelector('.ai-booking .btn').addEventListener('click', () => {
+        //     window.location.href = 'ai_booking.html';
+        // });
+
+        document.querySelector('.patient-report .btn').addEventListener('click', () => {
+            window.location.href = 'patient_report.html';
+        });
+
+
+
+
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+
+    </script>
+
+<script src="https://cdn.jsdelivr.net/npm/botui/build/botui.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Copy the JavaScript from ai_assistant.html here
+    var botui = new BotUI('botui', {
+        vue: window.Vue || {}
+    });
+
+    function toggleChatbot() {
+        var chatbot = document.getElementById('botui-app');
+        if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+            chatbot.style.display = 'block';
+            startConversation();
+        } else {
+            chatbot.style.display = 'none';
+        }
+    }
+
+    function startConversation() {
+        botui.message.add({
+            content: 'Hello! I’m DigiTAL’s AI Assistant. How can I help you today? (e.g., "I have a headache" or "Book an appointment")'
+        }).then(() => {
+            botui.message.add({
+                delay: 1000,
+                content: 'Type "exit" to end the chat.'
+            });
+        });
+
+        botui.action.text({
+            action: {
+                placeholder: 'Type your response...'
+            }
+        }).then(res => {
+            handleResponse(res.value);
+        });
+    }
+
+    function handleResponse(response) {
+        if (response.toLowerCase() === 'exit') {
+            botui.message.add({
+                content: 'Goodbye! Feel free to chat with me anytime.'
+            });
+            document.getElementById('botui-app').style.display = 'none';
+            return;
+        }
+
+        botui.message.add({
+            content: 'Processing your request...'
+        });
+
+        if (response.toLowerCase().includes('book') || response.toLowerCase().includes('appointment')) {
+            bookAppointmentFlow();
+        } else {
+            analyzeSymptoms(response);
+        }
+    }
+
+    function analyzeSymptoms(symptoms) {
+        $.get('/ai_assistant/analyze_symptoms/', { symptoms: symptoms }, function(data) {
+            if (data.error) {
+                botui.message.add({
+                    content: data.error
+                });
+            } else {
+                botui.message.add({
+                    content: 'Based on your symptoms, I found these doctors:'
+                });
+                data.doctors.forEach(doctor => {
+                    botui.message.add({
+                        delay: 500,
+                        content: `${doctor.name} (${doctor.specialization}) - Slots: ${doctor.slots.join(', ')}`
+                    });
+                });
+                bookAppointmentFlow();
+            }
+            botui.action.text({
+                action: {
+                    placeholder: 'Type your response...'
+                }
+            }).then(res => handleResponse(res.value));
+        });
+    }
+
+    function bookAppointmentFlow() {
+        botui.message.add({
+            content: 'Would you like to book an appointment? Please provide: Name, Email, Phone, Doctor ID, Date (YYYY-MM-DD), Time (HH:MM). Example: "John Doe, john@example.com, 1234567890, 1, 2025-03-16, 09:00"'
+        });
+        botui.action.text({
+            action: {
+                placeholder: 'Enter details...'
+            }
+        }).then(res => {
+            const [name, email, phone, doctor_id, date, time] = res.value.split(',').map(item => item.trim());
+            if (!name || !email || !phone || !doctor_id || !date || !time) {
+                botui.message.add({
+                    content: 'Invalid format. Please use: Name, Email, Phone, Doctor ID, Date, Time.'
+                });
+                bookAppointmentFlow();
+                return;
+            }
+            $.post('/ai_assistant/book_appointment/', {
+                name: name,
+                email: email,
+                phone: phone,
+                doctor_id: doctor_id,
+                date: date,
+                time: time
+            }, function(data) {
+                if (data.error) {
+                    botui.message.add({
+                        content: data.error
+                    });
+                } else {
+                    botui.message.add({
+                        content: data.message
+                    });
+                }
+                botui.action.text({
+                    action: {
+                        placeholder: 'Type your response...'
+                    }
+                }).then(res => handleResponse(res.value));
+            });
+        });
+    }
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,718 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | DigiTAL</title>
+
+  <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
+
+  <!--Fonts-->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+  <!-- fontawesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    * {
+    padding: 0;
+    margin: 0;
+    border: none;
+    text-decoration: none;
+    font-family: "Fredoka", sans-serif;
+    letter-spacing: 1px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  body {
+    background-color: grey;
+  }
+  
+  #hero {
+    background-image: url('{% static "img/backgrd.svg" %}');
+    background-size:cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+  
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    z-index: 0;
+  }
+  
+  .hero-section-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    height: fit-content;
+    width: 85%;
+    border-radius: 30px;
+    border: 2px solid rgba(211, 211, 211, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 10px;
+  }
+  
+  /* Header */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 15px;
+    margin: 10px;
+    z-index: 1;
+  }
+  
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  .logo span {
+    color: rgb(0, 225, 225);
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+  }
+  
+  nav a {
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    position: relative;
+    display:flex;
+    justify-content: center;
+  }
+  
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    height: 2px;
+    width: 80%;
+    box-shadow: 0 0 5px white;
+    transform: scaleX(0) translateY(-100%);
+    background-color: white;
+    transition: 0.3s;
+  }
+  nav a:hover::after {
+    transform: scaleX(0.5) translateY(0);
+  
+  }
+  
+  .active {
+    color: rgb(0, 225, 225);
+  }
+  
+  .active::after {
+    background-color: rgb(0, 225, 225);
+  }
+  
+  header button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 7px 25px;
+    background-color: transparent;
+    border: 1px solid white;
+    border-radius: 20px;
+    color: white;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  
+  header button:hover {
+    background-color: rgb(0, 225, 225);
+    color: rgba(0, 0, 0, 0.6);
+    border-color: rgb(0, 225, 225);
+  }
+  
+  /* Hero Content */
+  .hero-content {
+    padding: 15px 25px 0 25px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+  }
+  
+  /* Right Section */
+  .hero-content img {
+    width: 90%;
+    filter: drop-shadow(0 0 5px rgb(0, 225, 225))
+      drop-shadow(0 0 5px rgb(0, 225, 225))
+      drop-shadow(0 0 10px rgb(0, 225, 225))
+      drop-shadow(0 0 25px rgb(0, 225, 225));
+  }
+  .right-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Right Section Animation */
+  @keyframes rotatePlanet {
+    from{
+      transform: rotate(0deg);
+    }
+    to{
+      transform: rotate(360deg);
+    }
+  }
+  
+  .image-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: rotatePlanet 200s linear infinite;
+    height: 30vh;
+    width: 30vw;
+  }
+  .image-wrap img{
+    border-radius: 100px;
+  
+  }
+  
+  /* left Section */
+  .left-section {
+    display:flex;
+    align-items: center;
+    z-index: 1;
+  }
+  
+  .left-section h3 {
+    font-size: 4rem;
+    letter-spacing: 20px;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  .left-section h1 {
+    font-size: 8rem;
+    font-weight: 800;
+    color: white;
+    margin: -20px 0 0 0;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  h1 .color-change {
+    color: #BDF516	;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  h3 .color-change {
+    color:#BDF516	;
+    letter-spacing: 20px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  .left-section p {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    line-height: 1.5;
+    color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    width: 90%;
+    margin-bottom: 50px;
+  }
+  
+  p span {
+    color: white;
+    font-weight: 900;
+    font-size: 20px;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  }
+  
+  .cta-btn {
+    background-color: rgb(92, 255, 255);
+    color: white;
+    text-transform: uppercase;
+  }
+  
+  .cta-btn:hover{
+    background-color: rgb(115, 255, 255);
+    color: black;
+    border: none;
+    font-weight: normal;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  
+  
+  .big-cta-btn {
+    font-weight: bolder;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    width: 250px;
+    height: 55px;
+    border-radius: 50px;
+    background-color: rgb(0, 225, 225);
+    color: white;
+    text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  
+  .big-cta-btn:hover{
+    letter-spacing: 5px;
+    background-color: black;
+    font-weight:500;
+  }
+  
+  .social-icons {
+    color: white;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .social-icons i {
+    font-size: 18px;
+    width: 10px;
+    height: 10px;
+    border: 1px solid white;
+    padding: 15px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .social-icons i:hover {
+    color: rgb(0, 225, 225);
+    border-color: rgb(0, 225, 225);
+    transform: rotate(360deg) scale(1.1);
+  }
+  
+  /* Hero Section Animation */
+  @keyframes sideInLeft {
+    from{
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to{
+      transform: translateX(0%);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes sideInRight {
+    from{
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to{
+      transform: translateX(0%);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes topIn {
+    from{
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to{
+      transform: translateY(0%);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes bottomIn {
+    from{
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to{
+      transform: translateY(0%);
+      opacity: 1;
+    }
+  }
+  
+  /* Appling Animation */
+   header {
+    animation: topIn 1.2s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
+   }
+  
+   h3 {
+    animation: sideInLeft 1s ease-out forwards;
+    opacity: 0;
+   }
+   
+   h1 {
+    animation: sideInLeft 1s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.4s;
+   }
+  
+   p {
+    animation: sideInLeft 1s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.6s;
+   }
+  
+   .big-cta-btn {
+    animation: sideInLeft 1s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.8s;
+   }
+  
+   .social-icons {
+    animation: bottomIn 1s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
+   }
+  
+   .right-section img {
+    animation: sideInRight 1s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
+   }
+
+   #chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #00e1e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        #chatbot-toggle:hover {
+            transform: scale(1.1);
+        }
+        #chatbot-toggle i {
+            color: white;
+            font-size: 24px;
+        }
+        #botui-app {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 400px;
+            height: 500px;
+            z-index: 1000;
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        } 
+  </style>
+
+</head>
+
+<body>
+  
+  <!--Hero section-->
+  <section id="hero">
+    <div class="hero-section-container">
+      <header>
+        <a class="logo" href="#hero">Digi<span>TAL</span></a> <!--Left Section-->
+
+        {% if user.is_authenticated and user.role == 'admin' %}
+    <a href="{% url 'admin_dashboard' %}"><button>Admin Dashboard</button></a>
+{% endif %}
+
+        <a href="{% url 'login' %}"><button class="cta-btn">Login</button></a><!--Right Section-->
+      </header>
+
+      <div class="hero-content"> <!--Hero Content-->
+
+        <div class="left-section">
+          <div class="left-content-container">
+            <h3><span class="color-change">Digi</span>tal</h3>
+            <h1>
+              <span>HOSPI<span class="color-change">TAL</span></span> 
+            </h1>
+            <p>
+              <span>Transforming Healthcare, One Click at a Time.</span><br>Our digital hospital management system is designed to make healthcare accessible, efficient for everyone.
+            </p>
+
+             
+            <a href="{% url 'login' %}"><button class="big-cta-btn">Login</button></a>  
+          </div>
+        </div>
+
+        <div class="right-section">
+          <div class="image-wrap">
+            <img src="{% static 'img/hos-structure.jpg' %}" alt="planet image">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="social-icons">
+        <i class="fa-brands fa-facebook"></i>
+        <i class="fa-brands fa-youtube"></i>
+        <i class="fa-brands fa-twitter"></i>
+        <i class="fa-brands fa-google"></i>
+      </div>
+
+    </div>
+  </section>
+
+
+
+<!-- Include the chatbot toggle button -->
+<div id="chatbot-toggle">
+  <i class="fas fa-robot"></i>
+</div>
+
+<!-- Include the chatbot popup -->
+<div id="chatbot-app" style="display: none;">
+  <div id="chatbot-messages"></div>
+  <input type="text" id="chatbot-input" placeholder="Type your response...">
+  <button onclick="sendMessage()">Send</button>
+</div>
+
+<!-- Load jQuery (we only need this for API calls) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Chatbot styles -->
+<style>
+  #chatbot-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: #00c4cc;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1001;
+      color: white;
+  }
+  #chatbot-app {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  #chatbot-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      border-bottom: 1px solid #eee;
+  }
+  #chatbot-messages div {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 5px;
+      max-width: 80%;
+      word-wrap: break-word;
+  }
+  #chatbot-messages .bot-message {
+      background: #f0f0f0;
+      align-self: flex-start;
+  }
+  #chatbot-messages .user-message {
+      background: #00c4cc;
+      color: white;
+      align-self: flex-end;
+      margin-left: auto;
+  }
+  #chatbot-input {
+      width: calc(100% - 70px);
+      padding: 8px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+  }
+  #chatbot-app button {
+      width: 50px;
+      padding: 8px;
+      margin: 5px 5px 5px 0;
+      border: none;
+      background: #00c4cc;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+  }
+</style>
+
+<!-- Chatbot JavaScript -->
+<!-- Chatbot JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Toggle chatbot visibility
+      document.getElementById('chatbot-toggle').addEventListener('click', function() {
+          console.log("Chatbot toggle clicked!");
+          var chatbot = document.getElementById('chatbot-app');
+          if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+              console.log("Toggling chatbot on...");
+              chatbot.style.display = 'flex';
+              startConversation();
+          } else {
+              console.log("Toggling chatbot off...");
+              chatbot.style.display = 'none';
+          }
+      });
+
+      // Allow sending messages with Enter key
+      document.getElementById('chatbot-input').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+              sendMessage();
+          }
+      });
+  });
+
+  function addMessage(sender, content) {
+      console.log("Adding message:", sender, content);
+      var messagesDiv = document.getElementById('chatbot-messages');
+      var messageDiv = document.createElement('div');
+      messageDiv.className = sender === 'bot' ? 'bot-message' : 'user-message';
+      messageDiv.textContent = content;
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function startConversation() {
+      console.log("Starting conversation...");
+      addMessage('bot', 'Hello! I’m DigiTAL’s AI Assistant. How can I help you today? (e.g., "I have a headache" or "Book an appointment")');
+      setTimeout(() => {
+          addMessage('bot', 'Type "exit" to end the chat.');
+      }, 1000);
+  }
+
+  function sendMessage() {
+      console.log("Sending message...");
+      var input = document.getElementById('chatbot-input');
+      var message = input.value.trim();
+      if (!message) return;
+      addMessage('user', message);
+      input.value = '';
+
+      handleResponse(message);
+  }
+
+  function handleResponse(response) {
+      console.log("User response:", response);
+      if (response.toLowerCase() === 'exit') {
+          addMessage('bot', 'Goodbye! Feel free to chat with me anytime.');
+          setTimeout(() => {
+              document.getElementById('chatbot-app').style.display = 'none';
+          }, 1000);
+          return;
+      }
+
+      addMessage('bot', 'Processing your request...');
+      if (response.toLowerCase().includes('book') || response.toLowerCase().includes('appointment')) {
+          bookAppointmentFlow();
+      } else {
+          analyzeSymptoms(response);
+      }
+  }
+
+  function analyzeSymptoms(symptoms) {
+      console.log("Analyzing symptoms:", symptoms);
+      $.get('/ai_assistant/analyze_symptoms/', { symptoms: symptoms }, function(data) {
+          console.log("Analyze symptoms response:", data);
+          if (data.error) {
+              addMessage('bot', data.error);
+              promptUser();
+          } else {
+              addMessage('bot', 'Based on your symptoms, I found these doctors:');
+              let delay = 0;
+              data.doctors.forEach(doctor => {
+                  setTimeout(() => {
+                      addMessage('bot', `${doctor.name} (${doctor.specialization}) - Slots: ${doctor.slots.join(', ')}`);
+                  }, delay);
+                  delay += 500;
+              });
+              setTimeout(bookAppointmentFlow, delay);
+          }
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+          console.error("Analyze symptoms failed:", textStatus, errorThrown);
+          addMessage('bot', 'Sorry, there was an error processing your request. Please try again.');
+          promptUser();
+      });
+  }
+
+  function bookAppointmentFlow() {
+      addMessage('bot', 'Would you like to book an appointment? Please provide: Name, Email, Phone, Doctor ID, Date (YYYY-MM-DD), Time (HH:MM). Example: "John Doe, john@example.com, 1234567890, 1, 2025-03-16, 09:00"');
+  }
+
+  function promptUser() {
+      // No additional prompt needed; user can type directly into the input field
+  }
+
+  // Handle appointment booking response
+  document.getElementById('chatbot-input').addEventListener('input', function() {
+      var message = this.value.trim();
+      if (message.split(',').length === 6) { // Check if the input matches the booking format
+          var [name, email, phone, doctor_id, date, time] = message.split(',').map(item => item.trim());
+          if (name && email && phone && doctor_id && date && time) {
+              bookAppointment(name, email, phone, doctor_id, date, time);
+              this.value = ''; // Clear the input after processing
+          }
+      }
+  });
+
+  function bookAppointment(name, email, phone, doctor_id, date, time) {
+      console.log("Booking appointment:", { name, email, phone, doctor_id, date, time });
+      $.post('/ai_assistant/book_appointment/', {
+          name: name,
+          email: email,
+          phone: phone,
+          doctor_id: doctor_id,
+          date: date,
+          time: time
+      }, function(data) {
+          console.log("Book appointment response:", data);
+          if (data.error) {
+              addMessage('bot', data.error);
+          } else {
+              addMessage('bot', data.message);
+          }
+          promptUser();
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+          console.error("Book appointment failed:", textStatus, errorThrown);
+          addMessage('bot', 'Sorry, there was an error booking your appointment. Please try again.');
+          promptUser();
+      });
+  }
+</script>
+
+</body>
+
+</html>
