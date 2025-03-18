@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User's Page | DigiTAL</title>
 
-    <link rel="icon" href="img\redketchup\android-chrome-512x512.png" type="image/icon type">
+    <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
 
     <!--Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,578 +17,545 @@
     <!-- fontawesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Existing styles remain unchanged */
         * {
-    padding: 0;
-    margin: 0;
-    border: none;
-    text-decoration: none;
-    font-family: "Fredoka", sans-serif;
-    letter-spacing: 1px;
-}
-
-body {
-    background-image: url('{% static "img/backgrd.svg" %}');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-#hero {
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.1);
-    z-index: 0;
-}
-
-.hero-section-container {
-    margin: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    height: fit-content;
-    width: 90vw;
-    border-radius: 30px;
-    border: 2px solid rgba(211, 211, 211, 0.2);
-    backdrop-filter: blur(8px);
-    padding: 20px;
-}
-
-/* Header */
-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 15px;
-    margin: 20px;
-    z-index: 1;
-}
-
-.logoutBtn
-{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: lightcoral;
-    color: white;
-    padding: 8px;
-    border: none;
-    border-radius: 10px;
-    width: 5vw;
-}
-
-.logoutBtn:hover
-{
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.logoutBtn a
-{
-    color: white;
-    font-weight: bolder;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-}
-
-.logo {
-    font-size: 40px;
-    font-weight: bold;
-    color: white;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-}
-
-.logo span {
-    color: rgb(0, 225, 225);
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-}
-
-.add_pat {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 6px 14px;
-    margin: 10px;
-    border-radius: 5px;
-    background-color: rgb(0, 225, 225);
-    color: black;
-    border: none;
-    cursor: pointer;
-    height: fit-content;
-    width: fit-content;
-    font-size: large;
-}
-
-.add_pat:hover {
-    background-color: rgb(115, 255, 255);
-    color: black;
-    font-weight: bold;
-}
-
-#video,
-#canvas {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-
-
-
-.desk-container {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-}
-
-.add-patient-form {
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    width: 30vw;
-}
-
-.add-patient-form:hover {
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    width: 60vw;
-}
-
-
-.patient-list {
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    width: 30%;
-}
-
-.add-patient-form h3,
-.patient-list h3 {
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.group {
-    display: flex;
-    justify-content: space-around;
-}
-
-form label {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: small;
-    font-weight: 400;
-}
-
-form input,
-form select,
-form textarea {
-    width: 30%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    font-weight: 500;
-}
-
-.patient-list {
-    width: 30vw;
-    max-height: 500px;
-    overflow-y: auto;
-    border: none;
-    border-radius: 10px;
-}
-
-.patient-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #ffffff;
-    border-radius: 5px;
-}
-
-.edit-btn,
-.delete-btn {
-    background-color: #007bff;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.delete-btn {
-    background-color: #dc3545;
-}
-
-.edit-btn:hover,
-.delete-btn:hover {
-    opacity: 0.8;
-}
-
-
-
-
-
-.user-page {
-    text-align: center;
-}
-
-.title {
-    font-size: 2.5rem;
-    color: #ffffff;
-    margin-bottom: 20px;
-    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-}
-
-/* Container for the animated boxes */
-.options-container {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin: 15px;
-}
-
-/* Styling each option box */
-.option-box {
-    width: 300px;
-    height: 300px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-
-.option-box h2 {
-    color: #333;
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-}
-
-.option-box p {
-    color: #555;
-    font-size: 1rem;
-    margin-bottom: 20px;
-}
-
-/* Buttons inside the option boxes */
-.option-box .btn {
-    padding: 10px 20px;
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.option-box .btn:hover {
-    background-color: white;
-}
-
-/* Hover animations for boxes */
-.option-box:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* Specific styling for each box */
-.manual-booking {
-    background: rgb(220, 255, 255);
-    color: #fff;
-}
-
-.manual-booking img
-{
-    background-color: white;
-    width: 15vw;
-    height: 30vh;
-    border: none;
-    border-radius: 30%;
-}
-
-.ai-booking {
-    background: linear-gradient(135deg, #cd9eff, #a3afc5);
-    color: #fff;
-}
-
-.live_wait {
-    background: rgb(220, 255, 255);
-    color: #fff;
-}
-
-.live_wait img
-{
-    background-color: white;
-    width: 15vw;
-    height: 30vh;
-    border: none;
-    border-radius: 30%;
-}
-
-.patient-report {
-    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
-    color: #fff;
-}
-
-
-
-
-/* Features Section */
-.features-section {
-    padding: 20px;
-    margin: 20px;
-    background-color: #e3f2fd;
-    text-align: center;
-    border-radius: 10px;
-}
-
-.features-section h2 {
-    margin: 0px 0px 20px 0px;
-}
-
-
-.features-container {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.feature-box {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 300px;
-}
-
-.feature-box:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.feature-box img {
-    background: #fff9f9;
-    padding: 20px;
-    margin: 5px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.feature-box h3 {
-    color: #333;
-}
-
-.feature-box p {
-    color: #555;
-}
-
-/* Services Section */
-.services-section {
-    padding: 20px;
-    margin: 20px;
-    border-radius: 10px;
-    background-color: #e3f2fd;
-    text-align: center;
-    
-}
-.services-section h2 {
-    margin: 0px 0px 20px 0px;
-}
-
-.services-container {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.service-box {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 300px;
-}
-
-.service-box:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.service-box img {
-    background: #fff9f9;
-    padding: 20px;
-    margin: 5px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Doctors Section */
-.doctors-section {
-    padding: 30px;
-    background-color: #e3f2fd;
-    text-align: center;
-    margin: 20px;
-    border-radius: 10px;
-}
-.doctors-section h2 {
-    margin: 0px 0px 20px 0px;
-}
-
-.doctors-container {
-    display: flex;
-    justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.doctor-card {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 200px;
-}
-
-.doctor-card:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-.doctor-card img {
-    width: 100%;
-    border-radius: 50%;
-    margin-bottom: 15px;
-}
-
-.doctor-card h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-/* Footer Section */
-.footer-section {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-    margin: 20px;
-    border-radius: 10px;
-}
-
-.footer-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-section ul li {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-.footer-section ul li a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.footer-section ul li a:hover {
-    text-decoration: underline;
-}
-
-
-
-
-
-
-
-
-
-/* Hero Section Animation */
-@keyframes sideInLeft {
-    from {
-        transform: translateX(-100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0%);
-        opacity: 1;
-    }
-}
-
-@keyframes sideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0%);
-        opacity: 1;
-    }
-}
-
-@keyframes topIn {
-    from {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0%);
-        opacity: 1;
-    }
-}
-
-@keyframes bottomIn {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0%);
-        opacity: 1;
-    }
-}
-
-header {
-    animation: topIn 1.2s ease-out forwards;
-    opacity: 0;
-    animation-delay: 0.2s;
-}
-
-.login-container {
-    animation: sideInLeft 1s ease-out forwards;
-    opacity: 0;
-    animation-delay: 0.8s;
-}
-#chatbot-toggle {
+            padding: 0;
+            margin: 0;
+            border: none;
+            text-decoration: none;
+            font-family: "Fredoka", sans-serif;
+            letter-spacing: 1px;
+        }
+
+        body {
+            background-image: url('{% static "img/backgrd.svg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #hero {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 0;
+        }
+
+        .hero-section-container {
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            height: fit-content;
+            width: 90vw;
+            border-radius: 30px;
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 15px;
+            margin: 20px;
+            z-index: 1;
+        }
+
+        .logoutBtn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: lightcoral;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            width: 5vw;
+        }
+
+        .logoutBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .logoutBtn a {
+            color: white;
+            font-weight: bolder;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .logo span {
+            color: rgb(0, 225, 225);
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .add_pat {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px 14px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: rgb(0, 225, 225);
+            color: black;
+            border: none;
+            cursor: pointer;
+            height: fit-content;
+            width: fit-content;
+            font-size: large;
+        }
+
+        .add_pat:hover {
+            background-color: rgb(115, 255, 255);
+            color: black;
+            font-weight: bold;
+        }
+
+        .desk-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .add-patient-form {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            width: 30vw;
+        }
+
+        .add-patient-form:hover {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            width: 60vw;
+        }
+
+        .patient-list {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            width: 30%;
+        }
+
+        .add-patient-form h3,
+        .patient-list h3 {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .group {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        form label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: small;
+            font-weight: 400;
+        }
+
+        form input,
+        form select,
+        form textarea {
+            width: 30%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-weight: 500;
+        }
+
+        .patient-list {
+            width: 30vw;
+            max-height: 500px;
+            overflow-y: auto;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .patient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .edit-btn:hover,
+        .delete-btn:hover {
+            opacity: 0.8;
+        }
+
+        .user-page {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        /* Container for the animated boxes */
+        .options-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px;
+        }
+
+        /* Styling each option box */
+        .option-box {
+            width: 300px;
+            height: 300px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-box h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .option-box p {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons inside the option boxes */
+        .option-box .btn {
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .option-box .btn:hover {
+            background-color: white;
+        }
+
+        /* Hover animations for boxes */
+        .option-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Specific styling for each box */
+        .manual-booking {
+            background: rgb(220, 255, 255);
+            color: #fff;
+        }
+
+        .manual-booking img {
+            background-color: white;
+            width: 15vw;
+            height: 30vh;
+            border: none;
+            border-radius: 30%;
+        }
+
+        .ai-booking {
+            background: linear-gradient(135deg, #cd9eff, #a3afc5);
+            color: #fff;
+        }
+
+        .live_wait {
+            background: rgb(220, 255, 255);
+            color: #fff;
+        }
+
+        .live_wait img {
+            background-color: white;
+            width: 15vw;
+            height: 30vh;
+            border: none;
+            border-radius: 30%;
+        }
+
+        .patient-report {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            color: #fff;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 20px;
+            margin: 20px;
+            background-color: #e3f2fd;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .features-section h2 {
+            margin: 0px 0px 20px 0px;
+        }
+
+        .features-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .feature-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .feature-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-box img {
+            background: #fff9f9;
+            padding: 20px;
+            margin: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-box h3 {
+            color: #333;
+        }
+
+        .feature-box p {
+            color: #555;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            background-color: #e3f2fd;
+            text-align: center;
+        }
+
+        .services-section h2 {
+            margin: 0px 0px 20px 0px;
+        }
+
+        .services-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .service-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+        }
+
+        .service-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-box img {
+            background: #fff9f9;
+            padding: 20px;
+            margin: 5px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Doctors Section */
+        .doctors-section {
+            padding: 30px;
+            background-color: #e3f2fd;
+            text-align: center;
+            margin: 20px;
+            border-radius: 10px;
+        }
+
+        .doctors-section h2 {
+            margin: 0px 0px 20px 0px;
+        }
+
+        .doctors-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .doctor-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 200px;
+        }
+
+        .doctor-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .doctor-card img {
+            width: 100%;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .doctor-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Footer Section */
+        .footer-section {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin: 20px;
+            border-radius: 10px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .footer-section ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-section ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section Animation */
+        @keyframes sideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+        }
+
+        @keyframes sideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+        }
+
+        @keyframes topIn {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0%);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bottomIn {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0%);
+                opacity: 1;
+            }
+        }
+
+        header {
+            animation: topIn 1.2s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.2s;
+        }
+
+        .login-container {
+            animation: sideInLeft 1s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.8s;
+        }
+
+        #chatbot-toggle {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -605,14 +571,17 @@ header {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
         }
+
         #chatbot-toggle:hover {
             transform: scale(1.1);
         }
+
         #chatbot-toggle i {
             color: white;
             font-size: 24px;
         }
-        #botui-app {
+
+        #chatbot-app {
             position: fixed;
             bottom: 100px;
             right: 20px;
@@ -625,24 +594,195 @@ header {
             border: 2px solid rgba(211, 211, 211, 0.2);
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            flex-direction: column;
         }
 
+        #chatbot-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            border-bottom: 1px solid #eee;
+        }
 
+        #chatbot-messages div {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+            color: #333;
+            text-shadow: none;
+        }
+
+        #chatbot-messages .bot-message {
+            background: #f0f0f0;
+            align-self: flex-start;
+        }
+
+        #chatbot-messages .user-message {
+            background: #00c4cc;
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        #chatbot-input-area {
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        #chatbot-input {
+            width: calc(100% - 70px);
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #chatbot-app button {
+            width: 50px;
+            padding: 8px;
+            margin: 5px 5px 5px 0;
+            border: none;
+            background: #00c4cc;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #step-input {
+            padding: 15px;
+            border: 2px solid #00c4cc;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #step-input select,
+        #step-input input[type="text"],
+        #step-input input[type="date"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #00c4cc;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        #step-input .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        #step-input .radio-group label {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        #step-input button {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            background: #00c4cc;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #step-input button:hover {
+            background: #0099a6;
+        }
+        #step-input {
+            padding: 15px;
+            border: 2px solid #00c4cc;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #step-input select,
+        #step-input input[type="text"],
+        #step-input input[type="date"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #00c4cc;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        #step-input .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        #step-input .radio-group label {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+
+        #step-input button {
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            background: #00c4cc;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #step-input button:hover {
+            background: #0099a6;
+        }
+    
+        #chatbot-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        #chatbot-close:hover {
+            background: #cc0000;
+        }
+
+       
     </style>
-
 </head>
 
 <body>
-
-
     <!--Hero section-->
     <section id="hero">
         <div class="hero-section-container">
             <header>
-
-                <a class="logo" href="#hero">Digi<span>TAL</span></a> <!--Left Section-->
+                <a class="logo" href="#hero">Digi<span>TAL</span></a>
                 <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
-
             </header>
 
             <div class="user-page">
@@ -651,36 +791,28 @@ header {
                     <!-- Manual Booking Box -->
                     <a href="{% url 'manual_booking' %}">
                         <div class="option-box manual-booking">
-                        <img src="{% static 'img/manual_booking.gif' %}" alt="">
-                        <h2>Manual Booking</h2>
-                        <p>Book your appointment manually with ease.</p>
-                    </div>
-                </a>
+                            <img src="{% static 'img/manual_booking.gif' %}" alt="">
+                            <h2>Manual Booking</h2>
+                            <p>Book your appointment manually with ease.</p>
+                        </div>
+                    </a>
 
                     <!-- AI-Based Booking Box -->
                     <div class="option-box ai-booking">
                         <h2>AI-Based Booking</h2>
                         <p>Let AI help you find the best available slots.</p>
                         <a href="/"><button class="btn"><img src="{% static 'img/down.gif' %}" alt=""></button></a>
-                        <h2 style="color: white; margin-top: 10px;">Not Yet Done...Coming Soon</h2>
                     </div>
 
                     <a href="{% url 'appointment_history' %}">
-
-                    <div class="option-box live_wait">
-                        <img src="{% static 'img/wait_time.gif' %}" alt="">
-                        <h2>Live Waiting Time And Past Visits</h2>
-                        <p>Easy access to previous visits.</p>
-                        
-                    </div>
-                </a>
-
-                    <!-- Patient's Report Box -->
-
+                        <div class="option-box live_wait">
+                            <img src="{% static 'img/wait_time.gif' %}" alt="">
+                            <h2>Live Waiting Time And Past Visits</h2>
+                            <p>Easy access to previous visits.</p>
+                        </div>
+                    </a>
                 </div>
             </div>
-
-
 
             <!-- Our Features Section -->
             <section id="features" class="features-section">
@@ -721,7 +853,7 @@ header {
                     <div class="service-box">
                         <img src="{% static 'img/lab.gif' %}" alt="Doctor 1">
                         <h3>Lab Testing</h3>
-                        <p>Get accurate , Paperless and timely lab tests.</p>
+                        <p>Get accurate, paperless, and timely lab tests.</p>
                     </div>
                 </div>
             </section>
@@ -745,222 +877,324 @@ header {
                         <h3>Dr. Anil Mehta</h3>
                         <p>Orthopedic surgeon with 10+ years of expertise.</p>
                     </div>
-                    
                 </div>
             </section>
 
             <!-- Footer Section -->
             <footer id="footer" class="footer-section">
-                <p>&copy; 2024 DigiTAL . All Rights Reserved.</p>
-                </ul>
+                <p>© 2024 DigiTAL. All Rights Reserved.</p>
             </footer>
         </div>
     </section>
 
     <!-- Include the chatbot toggle button -->
-    <div id="chatbot-toggle" onclick="toggleChatbot()">
+    <div id="chatbot-toggle">
         <i class="fas fa-robot"></i>
     </div>
 
     <!-- Include the chatbot popup -->
-    <div id="botui-app">
-        <div id="botui"></div>
+    <div id="chatbot-app">
+        <button id="chatbot-close" title="Close Chatbot">X</button>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-area">
+            <input type="text" id="chatbot-input" placeholder="Type your response...">
+            <button id="send-button">Send</button>
+        </div>
+        <div id="step-input">
+            <select id="step-select"></select>
+            <input type="text" id="step-input-text" style="display: none;">
+            <input type="date" id="step-input-date" style="display: none;">
+            <div id="step-radio" class="radio-group" style="display: none;">
+                <label><input type="radio" name="confirm" value="yes"> Yes</label>
+                <label><input type="radio" name="confirm" value="no"> No</label>
+            </div>
+            <button id="step-next">Next</button>
+        </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Access the video element and canvas
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const captureButton = document.getElementById('captureButton');
-        let stream;
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotClose = document.getElementById('chatbot-close');
+            const chatbotInput = document.getElementById('chatbot-input');
+            const sendButton = document.getElementById('send-button');
+            const stepInput = document.getElementById('step-input');
+            const stepSelect = document.getElementById('step-select');
+            const stepInputText = document.getElementById('step-input-text');
+            const stepInputDate = document.getElementById('step-input-date');
+            const stepRadio = document.getElementById('step-radio');
+            const stepNext = document.getElementById('step-next');
 
-        // Access the webcam
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then((mediaStream) => {
-                stream = mediaStream;
-                video.srcObject = stream;
-            })
-            .catch((error) => {
-                console.error('Error accessing the camera:', error);
-            });
-
-        // Capture photo on button click
-        captureButton.addEventListener('click', () => {
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            canvas.style.display = 'block';
-
-            // Convert canvas image to data URL if needed
-            const photoData = canvas.toDataURL('image/png');
-            console.log(photoData); // Save or send this image data
-
-            // Stop the video stream to turn off the camera
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            video.style.display = 'none'; // Hide video after capturing the photo
-        });
-
-
-
-
-        // JavaScript for navigating to respective pages
-        document.querySelector('.manual-booking .btn').addEventListener('click', () => {
-            window.location.href = 'manual_booking.html';
-        });
-
-        // document.querySelector('.ai-booking .btn').addEventListener('click', () => {
-        //     window.location.href = 'ai_booking.html';
-        // });
-
-        document.querySelector('.patient-report .btn').addEventListener('click', () => {
-            window.location.href = 'patient_report.html';
-        });
-
-
-
-
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-
-    </script>
-
-<script src="https://cdn.jsdelivr.net/npm/botui/build/botui.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Copy the JavaScript from ai_assistant.html here
-    var botui = new BotUI('botui', {
-        vue: window.Vue || {}
-    });
-
-    function toggleChatbot() {
-        var chatbot = document.getElementById('botui-app');
-        if (chatbot.style.display === 'none' || chatbot.style.display === '') {
-            chatbot.style.display = 'block';
-            startConversation();
-        } else {
-            chatbot.style.display = 'none';
-        }
-    }
-
-    function startConversation() {
-        botui.message.add({
-            content: 'Hello! I’m DigiTAL’s AI Assistant. How can I help you today? (e.g., "I have a headache" or "Book an appointment")'
-        }).then(() => {
-            botui.message.add({
-                delay: 1000,
-                content: 'Type "exit" to end the chat.'
-            });
-        });
-
-        botui.action.text({
-            action: {
-                placeholder: 'Type your response...'
-            }
-        }).then(res => {
-            handleResponse(res.value);
-        });
-    }
-
-    function handleResponse(response) {
-        if (response.toLowerCase() === 'exit') {
-            botui.message.add({
-                content: 'Goodbye! Feel free to chat with me anytime.'
-            });
-            document.getElementById('botui-app').style.display = 'none';
-            return;
-        }
-
-        botui.message.add({
-            content: 'Processing your request...'
-        });
-
-        if (response.toLowerCase().includes('book') || response.toLowerCase().includes('appointment')) {
-            bookAppointmentFlow();
-        } else {
-            analyzeSymptoms(response);
-        }
-    }
-
-    function analyzeSymptoms(symptoms) {
-        $.get('/ai_assistant/analyze_symptoms/', { symptoms: symptoms }, function(data) {
-            if (data.error) {
-                botui.message.add({
-                    content: data.error
-                });
-            } else {
-                botui.message.add({
-                    content: 'Based on your symptoms, I found these doctors:'
-                });
-                data.doctors.forEach(doctor => {
-                    botui.message.add({
-                        delay: 500,
-                        content: `${doctor.name} (${doctor.specialization}) - Slots: ${doctor.slots.join(', ')}`
-                    });
-                });
-                bookAppointmentFlow();
-            }
-            botui.action.text({
-                action: {
-                    placeholder: 'Type your response...'
-                }
-            }).then(res => handleResponse(res.value));
-        });
-    }
-
-    function bookAppointmentFlow() {
-        botui.message.add({
-            content: 'Would you like to book an appointment? Please provide: Name, Email, Phone, Doctor ID, Date (YYYY-MM-DD), Time (HH:MM). Example: "John Doe, john@example.com, 1234567890, 1, 2025-03-16, 09:00"'
-        });
-        botui.action.text({
-            action: {
-                placeholder: 'Enter details...'
-            }
-        }).then(res => {
-            const [name, email, phone, doctor_id, date, time] = res.value.split(',').map(item => item.trim());
-            if (!name || !email || !phone || !doctor_id || !date || !time) {
-                botui.message.add({
-                    content: 'Invalid format. Please use: Name, Email, Phone, Doctor ID, Date, Time.'
-                });
-                bookAppointmentFlow();
+            if (!chatbotToggle || !chatbotClose || !chatbotInput || !sendButton || !stepInput || !stepSelect || !stepInputText || !stepInputDate || !stepRadio || !stepNext) {
+                console.error("Required chatbot elements not found in the DOM");
                 return;
             }
-            $.post('/ai_assistant/book_appointment/', {
-                name: name,
-                email: email,
-                phone: phone,
-                doctor_id: doctor_id,
-                date: date,
-                time: time
-            }, function(data) {
-                if (data.error) {
-                    botui.message.add({
-                        content: data.error
-                    });
+
+            function toggleChatbot() {
+                console.log("Chatbot toggle clicked!");
+                var chatbot = document.getElementById('chatbot-app');
+                if (chatbot.style.display === 'none' || chatbot.style.display === '') {
+                    console.log("Toggling chatbot on...");
+                    chatbot.style.display = 'flex';
+                    startConversation();
                 } else {
-                    botui.message.add({
-                        content: data.message
-                    });
+                    console.log("Toggling chatbot off...");
+                    chatbot.style.display = 'none';
+                    resetBooking();
                 }
-                botui.action.text({
-                    action: {
-                        placeholder: 'Type your response...'
+            }
+
+            function closeChatbot() {
+                console.log("Chatbot close button clicked!");
+                var chatbot = document.getElementById('chatbot-app');
+                chatbot.style.display = 'none';
+                resetBooking();
+            }
+
+            chatbotToggle.addEventListener('click', toggleChatbot);
+            chatbotClose.addEventListener('click', closeChatbot);
+
+            chatbotInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            sendButton.addEventListener('click', sendMessage);
+
+            let bookingData = {};
+            let currentStep = 0;
+            const steps = [
+                { message: "Based on your symptoms, here are the recommended doctors for your cure:", type: "select", options: [] },
+                { message: "Please select a time slot:", type: "select", options: [] },
+                { message: "Please select a date:", type: "date" },
+                { message: "Please enter your name:", type: "text" },
+                { message: "Please enter your email:", type: "text" },
+                { message: "Please enter your phone number:", type: "text" },
+                { message: "Confirm booking with the following details:\nName: {name}\nDoctor: {doctor}\nDate: {date}\nTime: {time}\n(Select Yes to confirm the booking or No to cancel)", type: "radio" }
+            ];
+
+            function addMessage(sender, content) {
+                console.log("Adding message:", sender, content);
+                var messagesDiv = document.getElementById('chatbot-messages');
+                var messageDiv = document.createElement('div');
+                messageDiv.className = sender === 'bot' ? 'bot-message' : 'user-message';
+                messageDiv.textContent = content;
+                messagesDiv.appendChild(messageDiv);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+
+            function startConversation() {
+                console.log("Starting conversation...");
+                addMessage('bot', 'Hello! I’m DigiTAL’s AI Assistant. How can I help you today? (e.g., "I have a headache" or "Book an appointment")');
+                setTimeout(() => addMessage('bot', 'Type "exit" to end the chat.'), 1000);
+            }
+
+            function sendMessage() {
+                console.log("Sending message...");
+                var input = document.getElementById('chatbot-input');
+                var message = input.value.trim();
+                if (!message) return;
+                addMessage('user', message);
+                input.value = '';
+                handleResponse(message);
+            }
+
+            function handleResponse(response) {
+                console.log("User response:", response);
+                if (response.toLowerCase() === 'exit') {
+                    addMessage('bot', 'Goodbye! Feel free to chat with me anytime.');
+                    setTimeout(() => document.getElementById('chatbot-app').style.display = 'none', 1000);
+                    resetBooking();
+                    return;
+                }
+                if (response.toLowerCase().includes('thank you')) {
+                    addMessage('bot', 'Happy to assist you! 😊');
+                    return;
+                }
+                addMessage('bot', 'Processing your request...');
+                if (currentStep === 0 && (response.toLowerCase().includes('book') || response.toLowerCase().includes('appointment') || response.toLowerCase().includes('have'))) {
+                    analyzeSymptoms(response);
+                } else if (currentStep > 0) {
+                    processStepResponse(response);
+                }
+            }
+
+            function analyzeSymptoms(symptoms) {
+                console.log("Analyzing symptoms:", symptoms);
+                $.get('/ai_assistant/analyze_symptoms/', { symptoms: symptoms }, function(data) {
+                    console.log("Analyze symptoms response:", data);
+                    if (data.error) {
+                        addMessage('bot', data.error);
+                    } else {
+                        bookingData.doctors = data.doctors;
+                        steps[0].options = data.doctors.map(d => ({ value: d.id, text: `${d.name} (${d.specialization})` }));
+                        nextStep();
                     }
-                }).then(res => handleResponse(res.value));
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.log("Analyze symptoms failed:", textStatus, errorThrown);
+                    addMessage('bot', 'Sorry, there was an error processing your request. Please try again.');
+                });
+            }
+
+            function nextStep() {
+                if (currentStep >= steps.length) {
+                    resetBooking();
+                    return;
+                }
+
+                const step = steps[currentStep];
+                let message = step.message;
+                if (step.type === 'radio') {
+                    const doctor = bookingData.doctors.find(d => d.id == bookingData.doctorId);
+                    message = message.replace('{name}', bookingData.name || 'None')
+                                    .replace('{doctor}', doctor ? doctor.name + ' (' + doctor.specialization + ')' : 'None')
+                                    .replace('{date}', bookingData.date || 'None')
+                                    .replace('{time}', bookingData.time || 'None');
+                }
+                addMessage('bot', message);
+
+                document.getElementById('chatbot-input-area').style.display = 'none';
+                stepInput.style.display = 'block';
+
+                stepSelect.style.display = 'none';
+                stepInputText.style.display = 'none';
+                stepInputDate.style.display = 'none';
+                stepRadio.style.display = 'none';
+
+                if (step.type === 'select') {
+                    stepSelect.innerHTML = '<option value="">Select</option>';
+                    step.options.forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option.value;
+                        opt.textContent = option.text;
+                        stepSelect.appendChild(opt);
+                    });
+                    stepSelect.style.display = 'block';
+                } else if (step.type === 'date') {
+                    stepInputDate.style.display = 'block';
+                    const today = new Date().toISOString().split('T')[0];
+                    stepInputDate.value = today;
+                    stepInputDate.setAttribute('min', today);
+                } else if (step.type === 'text') {
+                    stepInputText.style.display = 'block';
+                    stepInputText.value = '';
+                } else if (step.type === 'radio') {
+                    stepRadio.style.display = 'block';
+                    stepRadio.querySelector('input[value="yes"]').checked = false;
+                    stepRadio.querySelector('input[value="no"]').checked = false;
+                }
+
+                currentStep++;
+            }
+
+            function processStepResponse(response) {
+                const step = steps[currentStep - 1];
+                if (step.type === 'select') {
+                    const selectedValue = stepSelect.value;
+                    if (!selectedValue) {
+                        addMessage('bot', 'Please select a valid option.');
+                        return;
+                    }
+                    if (step.message.includes('doctors')) {
+                        bookingData.doctorId = selectedValue;
+                        fetchSlots(selectedValue);
+                    } else if (step.message.includes('time slot')) {
+                        bookingData.time = selectedValue;
+                        nextStep();
+                    }
+                } else if (step.type === 'date') {
+                    const date = stepInputDate.value;
+                    if (!date) {
+                        addMessage('bot', 'Please select a valid date.');
+                        return;
+                    }
+                    bookingData.date = date;
+                    nextStep();
+                } else if (step.type === 'text') {
+                    const value = stepInputText.value.trim();
+                    if (!value) {
+                        addMessage('bot', 'Please enter a valid value.');
+                        return;
+                    }
+                    if (step.message.includes('name')) bookingData.name = value;
+                    else if (step.message.includes('email')) bookingData.email = value;
+                    else if (step.message.includes('phone')) bookingData.phone = value;
+                    nextStep();
+                } else if (step.type === 'radio') {
+                    const selectedRadio = stepRadio.querySelector('input[name="confirm"]:checked');
+                    if (!selectedRadio) {
+                        addMessage('bot', 'Please select Yes or No to confirm or cancel.');
+                        return;
+                    }
+                    if (selectedRadio.value === 'yes') {
+                        bookAppointment();
+                    } else {
+                        addMessage('bot', 'Booking cancelled. How can I assist you further?');
+                        document.getElementById('step-input').style.display = 'none';
+                        document.getElementById('chatbot-input-area').style.display = 'block';
+                        resetBooking();
+                    }
+                }
+            }
+
+            function fetchSlots(doctorId) {
+                const doctor = bookingData.doctors.find(d => d.id == doctorId);
+                steps[1].options = doctor.slots.map(slot => ({ value: slot, text: slot }));
+                nextStep();
+            }
+
+            function bookAppointment() {
+                $.post('/ai_assistant/book_appointment/', {
+                    name: bookingData.name,
+                    email: bookingData.email,
+                    phone: bookingData.phone,
+                    doctor_id: bookingData.doctorId,
+                    date: bookingData.date,
+                    time: bookingData.time
+                }, function(data) {
+                    console.log("Book appointment response:", data);
+                    if (data.error) {
+                        addMessage('bot', data.error);
+                    } else {
+                        addMessage('bot', 'Appointment booked successfully! A confirmation email has been sent to your provided email address.');
+                    }
+                    document.getElementById('step-input').style.display = 'none';
+                    document.getElementById('chatbot-input-area').style.display = 'block';
+                    resetBooking();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Book appointment failed:", textStatus, errorThrown);
+                    addMessage('bot', 'Sorry, there was an error booking your appointment. Please try again.');
+                    document.getElementById('step-input').style.display = 'none';
+                    document.getElementById('chatbot-input-area').style.display = 'block';
+                });
+            }
+
+            function resetBooking() {
+                bookingData = {};
+                currentStep = 0;
+                stepSelect.innerHTML = '';
+                stepInputText.value = '';
+                stepInputDate.value = '';
+            }
+
+            stepNext.addEventListener('click', function() {
+                processStepResponse(stepSelect.value || stepInputDate.value || stepInputText.value);
+            });
+
+            // Updated navigation script
+            document.querySelectorAll('a[href*="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId.startsWith('#')) {
+                        document.querySelector(targetId).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
             });
         });
-    }
-</script>
-
-
+    </script>
 </body>
 
 </html>

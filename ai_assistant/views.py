@@ -1,4 +1,3 @@
-import spacy
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -7,37 +6,42 @@ from appointments.views import send_session_notification
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from .models import SymptomMapping
+import spacy
 
-# Load the spaCy model (use en_ner_bc5cdr_md for medical NER)
 nlp = spacy.load("en_ner_bc5cdr_md")
 
-@login_required
-def ai_assistant(request):
-    return render(request, 'ai_assistant/ai_assistant.html')
 
 @login_required
 def analyze_symptoms(request):
     if request.method == 'GET':
-        symptoms_text = request.GET.get('symptoms', '')
+        symptoms_text = request.GET.get('symptoms', '').lower()
         if not symptoms_text:
             return JsonResponse({'error': 'Symptoms are required'}, status=400)
 
-        # Use the medical NER model to extract symptoms
         doc = nlp(symptoms_text)
-        symptoms = [ent.text.lower() for ent in doc.ents if ent.label_ == "DISEASE"]
+        symptoms = list(set([ent.text.lower() for ent in doc.ents if ent.label_ == "DISEASE"]))
 
         if not symptoms:
-            return JsonResponse({'error': 'No recognizable symptoms found. Please describe your symptoms in more detail.'}, status=400)
+            symptoms = [symptoms_text]
 
-        # Look up specializations using the SymptomMapping model
-        specializations = set()
+        doctors = []
+        seen_doctors = set()  # To avoid duplicates
         for symptom in symptoms:
+            print(f"Processing symptom: {symptom}")
+            # Fetch all mappings without distinct
             mappings = SymptomMapping.objects.filter(symptom__iexact=symptom)
             for mapping in mappings:
-                specializations.add(mapping.specialization)
+                if mapping.doctor and mapping.doctor.id not in seen_doctors:
+                    doctor_data = {
+                        'id': mapping.doctor.id,
+                        'name': mapping.doctor.name,
+                        'specialization': mapping.doctor.specialization,
+                        'slots': mapping.doctor.available_slots.split(',') if isinstance(mapping.doctor.available_slots, str) else mapping.doctor.available_slots
+                    }
+                    doctors.append(doctor_data)
+                    seen_doctors.add(mapping.doctor.id)
 
-        # Fallback: If no mappings are found, use a simple dictionary
-        if not specializations:
+        if not doctors:
             fallback_map = {
                 'headache': 'Neurology',
                 'fever': 'General Medicine',
@@ -47,22 +51,25 @@ def analyze_symptoms(request):
             }
             for symptom in symptoms:
                 if symptom in fallback_map:
-                    specializations.add(fallback_map[symptom])
+                    # Fetch doctors without distinct
+                    fallback_doctors = Doctor.objects.filter(specialization=fallback_map[symptom]).values(
+                        'id', 'name', 'specialization', 'available_slots'
+                    )
+                    for doctor in fallback_doctors:
+                        if doctor['id'] not in seen_doctors:
+                            doctor_data = {
+                                'id': doctor['id'],
+                                'name': doctor['name'],
+                                'specialization': doctor['specialization'],
+                                'slots': doctor['available_slots'].split(',') if isinstance(doctor['available_slots'], str) else doctor['available_slots']
+                            }
+                            doctors.append(doctor_data)
+                            seen_doctors.add(doctor['id'])
 
-        if not specializations:
-            return JsonResponse({'error': 'No matching specializations found for the identified symptoms.'}, status=404)
+        if not doctors:
+            return JsonResponse({'error': 'No doctors found for the identified symptoms.'}, status=404)
 
-        # Find doctors with matching specializations
-        doctors = Doctor.objects.filter(specialization__in=specializations)
-        if not doctors.exists():
-            return JsonResponse({'error': 'No doctors found for the identified specializations.'}, status=404)
-
-        doctor_list = [
-            {'id': doctor.id, 'name': doctor.name, 'specialization': doctor.specialization, 'slots': doctor.available_slots.split(',')}
-            for doctor in doctors
-        ]
-
-        return JsonResponse({'doctors': doctor_list})
+        return JsonResponse({'doctors': doctors})
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @login_required
@@ -73,7 +80,7 @@ def book_appointment_api(request):
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         doctor_id = request.POST.get('doctor_id')
-        date = request.POST.get('date', datetime.now().strftime('%Y-%m-%d'))  # Default to today
+        date = request.POST.get('date', datetime.now().strftime('%Y-%m-%d'))
         time = request.POST.get('time')
 
         if not all([name, email, phone, doctor_id, time]):
@@ -81,7 +88,7 @@ def book_appointment_api(request):
 
         try:
             doctor = Doctor.objects.get(id=doctor_id)
-            available_slots = doctor.available_slots.split(",")
+            available_slots = doctor.available_slots.split(",") if doctor.available_slots else []
 
             if time not in available_slots:
                 return JsonResponse({'error': 'Invalid time slot selected'}, status=400)
@@ -106,7 +113,7 @@ def book_appointment_api(request):
                 message="Your appointment has been successfully booked with DigiTAL via AI Assistant."
             )
 
-            return JsonResponse({'success': True, 'message': 'Appointment booked successfully!'})
+            return JsonResponse({'message': 'Appointment booked successfully!'})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
