@@ -1,12 +1,18 @@
 from django.db import models
+from django.conf import settings
 
 class Doctor(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        limit_choices_to={'role': 'doctor'},
+        related_name='doctor_profile',
+    )
     name = models.CharField(max_length=100)
     specialization = models.CharField(max_length=100)
     experience = models.PositiveIntegerField()
     image = models.ImageField(upload_to='doctors/', null=True)
     available_slots = models.TextField(help_text="Comma-separated available slots (e.g., 09:00,15:00,19:00)")
-    # Temporary slot adjustment for a specific day
     temp_slot_adjustment = models.IntegerField(default=0, help_text="Temporary hours added to slots (e.g., 1 or 2 hours)")
 
     def __str__(self):

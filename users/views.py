@@ -12,7 +12,19 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from appointments.views import send_session_notification
-
+from django.contrib.auth import login, logout, authenticate
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden, JsonResponse
+from django.contrib.auth import get_user_model
+from .forms import CustomUserCreationForm
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from appointments.models import Appointment
+from doctors.models import Doctor
+from datetime import datetime
+from medical_records.models import MedicalRecord
 
 User = get_user_model()
 
@@ -32,48 +44,66 @@ def admin_dashboard(request):
 
     errors = []
     if request.method == 'POST':
-        print("POST request received")  
-
-        
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        role = request.POST.get('role')
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
-
-        print(f"Username: {username}, Email: {email}, Role: {role}")
-
-        if not username or not email or not role or not password1 or not password2:
-            errors.append("All fields are required.")
-        if password1 != password2:
-            errors.append("Passwords do not match.")
-        if CustomUser.objects.filter(username=username).exists():
-            errors.append("Username already exists.")
-        if CustomUser.objects.filter(email=email).exists():
-            errors.append("Email already exists.")
-        if role not in ['admin', 'doctor', 'desk', 'user']:
-            errors.append("Invalid role selected.")
-
-        if not errors:
-            print("No validation errors, creating user")
-            user = CustomUser.objects.create(
-                username=username,
-                email=email,
-                role=role,
-                password=make_password(password1)
-            )
-            print(f"User created successfully: {user}")
-            return redirect('admin_dashboard')
+        if 'change_password' in request.POST:
+            user_id = request.POST.get('user_id')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            if new_password and confirm_password and new_password == confirm_password:
+                user = get_object_or_404(CustomUser, id=user_id)
+                user.password = make_password(new_password)
+                user.save()
+                messages.success(request, f"Password changed successfully for {user.username}!")
+            else:
+                messages.error(request, "Passwords do not match or are empty.")
         else:
-            print(f"Validation errors: {errors}")
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            role = request.POST.get('role')
+            password1 = request.POST.get('password1')
+            password2 = request.POST.get('password2')
+            specialization = request.POST.get('specialization', 'General')
+            experience = request.POST.get('experience', 0)
+            available_slots = request.POST.get('available_slots', '09:00,12:00,15:00')
+
+            if not username or not email or not role or not password1 or not password2:
+                errors.append("All fields are required.")
+            if password1 != password2:
+                errors.append("Passwords do not match.")
+            if CustomUser.objects.filter(username=username).exists():
+                errors.append("Username already exists.")
+            if CustomUser.objects.filter(email=email).exists():
+                errors.append("Email already exists.")
+            if role not in ['admin', 'doctor', 'desk', 'user', 'lab_technician', 'cashier']:
+                errors.append("Invalid role selected.")
+
+            if not errors:
+                user = CustomUser.objects.create(
+                    username=username,
+                    email=email,
+                    role=role,
+                    password=make_password(password1)
+                )
+                if role == 'doctor':
+                    Doctor.objects.create(
+                        user=user,
+                        name=username,
+                        specialization=specialization,
+                        experience=int(experience),
+                        available_slots=available_slots
+                    )
+                messages.success(request, f"User {username} created successfully!")
+                return redirect('admin_dashboard')
+            else:
+                for error in errors:
+                    messages.error(request, error)
 
     users = CustomUser.objects.all()
+    doctors = Doctor.objects.all()
     return render(request, 'users/admin_dashboard.html', {
         'errors': errors,
-        'users': users
+        'users': users,
+        'doctors': doctors
     })
-
-
 
 
 
@@ -93,11 +123,11 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-        selected_role = request.POST.get('role') 
+        selected_role = request.POST.get('role')
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            if user.role == selected_role: 
+            if user.role == selected_role:
                 login(request, user)
                 if user.role == 'admin':
                     return redirect('admin_dashboard')
@@ -107,7 +137,10 @@ def login_view(request):
                     return redirect('desk_dashboard')
                 elif user.role == 'user':
                     return redirect('user_dashboard')
-
+                elif user.role == 'lab_technician':
+                    return redirect('lab_dashboard')  # Ensure this URL is defined
+                elif user.role == 'cashier':
+                    return redirect('cashier_dashboard')  # Ensure this URL is defined
             else:
                 return render(request, 'users/login.html', {'error': 'Role mismatch. Please select the correct role.'})
         else:
@@ -187,10 +220,54 @@ def desk_dashboard(request):
         'doctors': doctors,
     })
 
-@login_required
 @role_required('doctor')
+@login_required
 def doctor_dashboard(request):
-    return render(request, 'users/doctor_dashboard.html')
+    if request.user.role != 'doctor':
+        return HttpResponseForbidden("Only doctors can access this page.")
+
+    try:
+        doctor = request.user.doctor_profile  # Access the linked Doctor profile via the related_name
+    except Doctor.DoesNotExist:
+        return HttpResponseForbidden("No doctor profile found for this user. Please contact the admin to create a doctor profile.")
+
+    current_date = datetime.now().date()
+    appointments = Appointment.objects.filter(
+        doctor=doctor,
+        date=current_date,
+        status='Pending'
+    ).order_by('time')  # Queue based on time slots
+
+    if request.method == 'POST':
+        if 'prescription' in request.POST:
+            patient_id = request.POST.get('patient_id')
+            prescription_data = request.POST.get('prescription_data')
+            if patient_id and prescription_data:
+                appointment = get_object_or_404(Appointment, id=patient_id)
+                patient = appointment.user  # Assuming Appointment has a user field
+                MedicalRecord.objects.create(
+                    patient=patient,
+                    record_type='Prescription',
+                    data=prescription_data
+                )
+                messages.success(request, "Prescription saved successfully!")
+        elif 'lab_request' in request.POST:
+            patient_id = request.POST.get('patient_id')
+            lab_request = request.POST.get('lab_request')
+            if patient_id and lab_request:
+                appointment = get_object_or_404(Appointment, id=patient_id)
+                patient = appointment.user
+                MedicalRecord.objects.create(
+                    patient=patient,
+                    record_type='LabRequest',
+                    data=lab_request
+                )
+                messages.success(request, "Lab request saved successfully!")
+
+    return render(request, 'users/doctor_dashboard.html', {
+        'appointments': appointments,
+        'doctor': doctor
+    })
 
 
 @login_required

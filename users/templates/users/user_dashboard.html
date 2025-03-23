@@ -788,7 +788,7 @@
             <div class="user-page">
                 <h1 class="title">Welcome to DigiTAL</h1>
                 <div class="options-container">
-                    <!-- Manual Booking Box -->
+                    <!-- Existing options -->
                     <a href="{% url 'manual_booking' %}">
                         <div class="option-box manual-booking">
                             <img src="{% static 'img/manual_booking.gif' %}" alt="">
@@ -796,19 +796,31 @@
                             <p>Book your appointment manually with ease.</p>
                         </div>
                     </a>
-
-                    <!-- AI-Based Booking Box -->
                     <div class="option-box ai-booking">
                         <h2>AI-Based Booking</h2>
                         <p>Let AI help you find the best available slots.</p>
                         <a href="/"><button class="btn"><img src="{% static 'img/down.gif' %}" alt=""></button></a>
                     </div>
-
                     <a href="{% url 'appointment_history' %}">
                         <div class="option-box live_wait">
                             <img src="{% static 'img/wait_time.gif' %}" alt="">
                             <h2>Live Waiting Time And Past Visits</h2>
                             <p>Easy access to previous visits.</p>
+                        </div>
+                    </a>
+                    <!-- New options -->
+                    <a href="{% url 'lab_dashboard' %}">
+                        <div class="option-box">
+                            <img src="{% static 'img/lab.gif' %}" alt="">
+                            <h2>Lab Dashboard</h2>
+                            <p>Input and manage lab reports.</p>
+                        </div>
+                    </a>
+                    <a href="{% url 'cashier_dashboard' %}">
+                        <div class="option-box">
+                            <img src="{% static 'img/pharmacy_bill.gif' %}" alt="">
+                            <h2>Cashier Dashboard</h2>
+                            <p>Manage billing and pharmacy bills.</p>
                         </div>
                     </a>
                 </div>

@@ -1,3 +1,76 @@
-<h2>Welcome, Doctor!</h2>
-<p>Here is your dashboard.</p>
-<a href="{% url 'logout' %}">Logout</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard | DigiTAL</title>
+
+    <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Fredoka", sans-serif; }
+        body { background: url("{% static 'img/backgrd.svg' %}") no-repeat center center fixed; background-size: cover; }
+        .hero-section-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+        .logo { font-size: 2rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo span { color: #00c4cc; }
+        .logoutBtn a { color: #fff; text-decoration: none; font-size: 1.2rem; padding: 10px 20px; border: 2px solid #00c4cc; border-radius: 5px; transition: background 0.3s ease; }
+        .logoutBtn a:hover { background: #00c4cc; }
+        .title { font-size: 3rem; color: #fff; text-align: center; margin-bottom: 40px; }
+        .dashboard-container { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 20px; }
+        .patient-queue { margin-bottom: 20px; }
+        .patient-queue h3 { color: #fff; }
+        .patient-queue ul { list-style: none; padding: 0; }
+        .patient-queue ul li { background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 10px; margin: 10px 0; color: #fff; }
+        .form-section { display: flex; gap: 20px; }
+        form { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
+        form select, form textarea { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #00c4cc; border-radius: 5px; background: #fff; margin-bottom: 10px; }
+        form button { padding: 10px; font-size: 1rem; border: none; background: #00c4cc; color: white; border-radius: 5px; cursor: pointer; width: 100%; }
+        form button:hover { background: #0099a6; }
+    </style>
+</head>
+<body>
+    <section id="hero">
+        <div class="hero-section-container">
+            <header>
+                <a class="logo" href="{% url 'doctor_dashboard' %}">Digi<span>TAL</span></a>
+                <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
+            </header>
+            <div class="user-page">
+                <h1 class="title">Doctor Dashboard</h1>
+                <div class="dashboard-container">
+                    <div class="patient-queue">
+                        <h3>Patient Queue (Today: {{ current_date|date:"Y-m-d" }})</h3>
+                        <ul>
+                            {% for appointment in appointments %}
+                                <li>
+                                    {{ appointment.patient_name }} ({{ appointment.time }})
+                                    <form method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="patient_id" value="{{ appointment.id }}">
+                                        <textarea name="prescription_data" placeholder="Write prescription..." rows="3"></textarea>
+                                        <button type="submit" name="prescription">Save Prescription</button>
+                                    </form>
+                                    <form method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="patient_id" value="{{ appointment.id }}">
+                                        <input type="text" name="lab_request" placeholder="e.g., Blood Test" required>
+                                        <button type="submit" name="lab_request">Request Lab Test</button>
+                                    </form>
+                                </li>
+                            {% empty %}
+                                <li>No patients in queue today.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

@@ -27,11 +27,10 @@
     }
     
     .poppins-regular {
-  font-family: "Poppins", serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
+      font-family: "Poppins", serif;
+      font-weight: 400;
+      font-style: normal;
+    }
 
     body {
       background-color: grey;
@@ -99,11 +98,9 @@
       box-shadow: 0px 0px 10px rgba(0, 225, 225, 0.5);
       text-align: center;
       backdrop-filter: blur(10px);
-
     }
 
-    .line
-    {
+    .line {
       border-top: 2px solid black;
       width: 25vw;
       margin: 10px;
@@ -152,13 +149,11 @@
       font-weight:normal;
     }
 
-
     .check_register {
       margin-bottom: 10px;
       font-size: smaller;
       color: white;
       text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-
     }
 
     .check_register a {
@@ -166,7 +161,6 @@
       text-decoration: underline;
       text-shadow: -1px 0 blue, 0 1px blue, 1px 0 blue, 0 -1px blue;
       font-weight: normal;
-
     }
 
     .login-button {
@@ -185,7 +179,6 @@
       background-color: rgb(115, 255, 255);
       color: black;
     }
-
 
     .social-icons {
       color: white;
@@ -221,7 +214,6 @@
         transform: translateX(-100%);
         opacity: 0;
       }
-
       to {
         transform: translateX(0%);
         opacity: 1;
@@ -233,7 +225,6 @@
         transform: translateX(100%);
         opacity: 0;
       }
-
       to {
         transform: translateX(0%);
         opacity: 1;
@@ -245,7 +236,6 @@
         transform: translateY(-100%);
         opacity: 0;
       }
-
       to {
         transform: translateY(0%);
         opacity: 1;
@@ -257,7 +247,6 @@
         transform: translateY(100%);
         opacity: 0;
       }
-
       to {
         transform: translateY(0%);
         opacity: 1;
@@ -282,7 +271,6 @@
       animation-delay: 0.2s;
     }
   </style>
-
 </head>
 
 <body class="poppins-regular">
@@ -293,11 +281,8 @@
         <a class="logo" href="#hero">Digi<span>TAL</span></a> <!--Left Section-->
       </header>
       <div class="login-container">
-
         <h1>Login</h1>
-
         <center><div class="line"></div></center>
-
         <form method="post">
           {% csrf_token %}
           {% if error %}
@@ -314,38 +299,30 @@
             <div class="role">
               <label for="role">Role:</label>
               <select name="role" class="poppins-regular" required>
-              <option value="user">User</option>
-              <option value="doctor">Doctor</option>
-              <option value="desk">Desk</option>
-              <option value="admin">Admin</option>
-            </select>
+                <option value="user">User</option>
+                <option value="doctor">Doctor</option>
+                <option value="desk">Desk</option>
+                <option value="admin">Admin</option>
+                <option value="lab_technician">Lab Technician</option> <!-- Added -->
+                <option value="cashier">Cashier</option> <!-- Added -->
+              </select>
             </div>
           </center>
           <br>
-
           <hr>
-
           <p class="check_register">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
-
           <br>
-
           <button type="submit" class="login-button">Login</button>
         </form>
-        
       </div>
-
-
       <div class="social-icons">
         <i class="fa-brands fa-facebook"></i>
         <i class="fa-brands fa-youtube"></i>
         <i class="fa-brands fa-twitter"></i>
         <i class="fa-brands fa-google"></i>
       </div>
-
     </div>
   </section>
 
-
-</body>
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </html>

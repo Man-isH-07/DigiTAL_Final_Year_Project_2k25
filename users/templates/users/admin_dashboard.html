@@ -1,94 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | DigiTAL</title>
+
+    <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        form {
-            margin: 20px 0;
-        }
-        input, select, button {
-            display: block;
-            margin: 10px 0;
-            padding: 8px;
-            width: 300px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Fredoka", sans-serif; }
+        body { background: url("{% static 'img/background_image.jpg' %}") no-repeat center center fixed; background-size: cover; }
+        .hero-section-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+        .logo { font-size: 2rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo span { color: #00c4cc; }
+        .logoutBtn a { color: #fff; text-decoration: none; font-size: 1.2rem; padding: 10px 20px; border: 2px solid #00c4cc; border-radius: 5px; transition: background 0.3s ease; }
+        .logoutBtn a:hover { background: #00c4cc; }
+        .title { font-size: 3rem; color: #fff; text-align: center; margin-bottom: 40px; }
+        .dashboard-container { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 20px; }
+        form { background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        form select, form input { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #00c4cc; border-radius: 5px; background: #fff; margin-bottom: 10px; }
+        form button { padding: 10px; font-size: 1rem; border: none; background: #00c4cc; color: white; border-radius: 5px; cursor: pointer; width: 100%; }
+        form button:hover { background: #0099a6; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; color: #fff; background: rgba(255, 255, 255, 0.1); }
+        th { background: #00c4cc; }
+        .messages { color: #fff; margin: 10px 0; }
+        .messages li { padding: 10px; border-radius: 5px; }
+        .messages .success { background: #00c4cc; }
+        .messages .error { background: #ff4d4d; }
+        .doctor-fields { display: none; }
     </style>
 </head>
 <body>
-    <h2>Welcome, {{ user.username }}!</h2>
+    <section id="hero">
+        <div class="hero-section-container">
+            <header>
+                <a class="logo" href="{% url 'admin_dashboard' %}">Digi<span>TAL</span></a>
+                <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
+            </header>
+            <div class="user-page">
+                <h1 class="title">Admin Dashboard</h1>
+                <div class="dashboard-container">
+                    {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li class="{{ message.tags }}">{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+                    <h3>Create a New User</h3>
+                    <form method="POST" action="{% url 'admin_dashboard' %}">
+                        {% csrf_token %}
+                        <input type="text" name="username" placeholder="Username" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <select name="role" id="role" required>
+                            <option value="admin">Admin</option>
+                            <option value="doctor">Doctor</option>
+                            <option value="desk">Desk</option>
+                            <option value="user">User</option>
+                            <option value="lab_technician">Lab Technician</option>
+                            <option value="cashier">Cashier</option>
+                        </select>
+                        <div class="doctor-fields" id="doctorFields">
+                            <input type="text" name="specialization" placeholder="Specialization (e.g., Cardiology)">
+                            <input type="number" name="experience" placeholder="Experience (years)">
+                            <input type="text" name="available_slots" placeholder="Available Slots (e.g., 09:00,12:00,15:00)">
+                        </div>
+                        <input type="password" name="password1" placeholder="Password" required>
+                        <input type="password" name="password2" placeholder="Confirm Password" required>
+                        <button type="submit">Create User</button>
+                    </form>
 
+                    {% if errors %}
+                        <ul style="color: red;">
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
-    <h3>Create a New User</h3>
-    <form method="POST" action="{% url 'admin_dashboard' %}">
-        {% csrf_token %}
-        <!-- Your form fields here -->
-        <input type="text" name="username" placeholder="Username">
-        <input type="email" name="email" placeholder="Email">
-        <select name="role">
-            <option value="admin">Admin</option>
-            <option value="doctor">Doctor</option>
-            <option value="desk">Desk</option>
-            <option value="user">User</option>
-        </select>
-        <input type="password" name="password1" placeholder="Password">
-        <input type="password" name="password2" placeholder="Confirm Password">
-        <button type="submit">Create User</button>
-    </form>
-    
+                    <h3>Change Password for User</h3>
+                    <form method="POST" action="{% url 'admin_dashboard' %}">
+                        {% csrf_token %}
+                        <select name="user_id" required>
+                            {% for user in users %}
+                                <option value="{{ user.id }}">{{ user.username }} ({{ user.role }})</option>
+                            {% endfor %}
+                        </select>
+                        <input type="password" name="new_password" placeholder="New Password" required>
+                        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                        <button type="submit" name="change_password">Change Password</button>
+                    </form>
 
-    <!-- Display validation errors -->
-    {% if errors %}
-        <ul style="color: red;">
-            {% for error in errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+                    <h3>All Users</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.role }}</td>
+                                <td>
+                                    <a href="{% url 'edit_user' user.id %}">Edit</a> |
+                                    <a href="{% url 'delete_user' user.id %}" onclick="return confirm('Are you sure?');">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-    <h3>All Users</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.role }}</td>
-                <td>
-                    <a href="{% url 'edit_user' user.id %}">Edit</a> |
-                    <a href="{% url 'delete_user' user.id %}" onclick="return confirm('Are you sure?');">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <p><a href="{% url 'logout' %}">Logout</a></p>
+                    <h3>Doctors</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>Experience</th>
+                                <th>Available Slots</th>
+                                <th>Linked User</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doctor in doctors %}
+                            <tr>
+                                <td>{{ doctor.name }}</td>
+                                <td>{{ doctor.specialization }}</td>
+                                <td>{{ doctor.experience }}</td>
+                                <td>{{ doctor.available_slots }}</td>
+                                <td>{{ doctor.user.username }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#role').change(function() {
+                if ($(this).val() === 'doctor') {
+                    $('#doctorFields').show();
+                } else {
+                    $('#doctorFields').hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'doctors',
     'medical_records',
     'ai_assistant',
+    'lab_report', 
+    'cashier',
 ]
 
 MIDDLEWARE = [
