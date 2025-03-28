@@ -641,3 +641,38 @@ def send_session_notification(appointments, subject, message, include_wait_time=
             logger.info(f"Email sent to {appointment.patient_email} for appointment ID {appointment.id}")
         except Exception as e:
             logger.error(f"Failed to send email to {appointment.patient_email}: {str(e)}")
+
+# for docotr Dashboard
+
+@login_required
+def fetch_session_status(request):
+    if request.user.role != 'doctor':
+        return JsonResponse({'success': False, 'error': 'Only doctors can access this page.'})
+
+    try:
+        doctor = request.user.doctor_profile
+    except Doctor.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'No doctor profile found.'})
+
+    current_date = datetime.now().date()
+    active_session = SessionHistory.objects.filter(
+        doctor=doctor,
+        date=current_date,
+        is_active=True
+    ).first()
+
+    if active_session:
+        return JsonResponse({
+            'success': True,
+            'is_active': active_session.is_active,
+            'slot': active_session.slot,
+            'start_time': active_session.start_time.strftime('%H:%M'),
+            'current_patient_id': active_session.current_patient.id if active_session.current_patient else None,
+            'current_patient_name': active_session.current_patient.patient_name if active_session.current_patient else None,
+            'patient_timer': active_session.patient_timer,
+        })
+    else:
+        return JsonResponse({
+            'success': True,
+            'is_active': False,
+        })

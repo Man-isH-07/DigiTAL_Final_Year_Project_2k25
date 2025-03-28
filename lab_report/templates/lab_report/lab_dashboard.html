@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Dashboard | DigiTAL</title>
-
     <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
-
-    <!--Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-
-    <!-- fontawesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Same styles as user_dashboard.html */
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +19,7 @@
         }
 
         body {
-            background: url("{% static 'img/background_image.jpg' %}") no-repeat center center fixed;
+            background: url("{% static 'img/backgrd.svg' %}") no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -76,75 +69,24 @@
             margin-bottom: 40px;
         }
 
-        .options-container {
+        .boxes-container {
             display: flex;
-            flex-wrap: wrap;
             gap: 20px;
-            justify-content: center;
+            margin-bottom: 40px;
         }
 
-        .option-box {
+        .box {
+            flex: 1;
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(211, 211, 211, 0.2);
             backdrop-filter: blur(8px);
             border-radius: 15px;
             padding: 20px;
-            width: 300px;
-            text-align: center;
-            transition: transform 0.3s ease;
         }
 
-        .option-box:hover {
-            transform: translateY(-10px);
-        }
-
-        .option-box h2 {
-            font-size: 1.5rem;
+        .box h2 {
             color: #fff;
-            margin-bottom: 10px;
-        }
-
-        .option-box p {
-            font-size: 1rem;
-            color: #d3d3d3;
-        }
-
-        form {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #00c4cc;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        form select, form textarea {
-            padding: 10px;
-            font-size: 1rem;
-            border: 2px solid #00c4cc;
-            border-radius: 5px;
-            background: #fff;
-        }
-
-        form textarea {
-            height: 100px;
-            resize: none;
-        }
-
-        form button {
-            padding: 10px;
-            font-size: 1rem;
-            border: none;
-            background: #00c4cc;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        form button:hover {
-            background: #0099a6;
+            margin-bottom: 20px;
         }
 
         ul {
@@ -154,15 +96,60 @@
 
         ul li {
             background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(211, 211, 211, 0.2);
+            border: 2px solid #00c4cc;
             border-radius: 10px;
             padding: 10px;
             margin: 10px 0;
             color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .status-btn.waiting {
+            background: #ff4d4d;
+        }
+
+        .status-btn.collected {
+            background: #ffeb3b;
+            color: #000;
+        }
+
+        .status-btn.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .completed-container {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(8px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .completed-container h2 {
+            color: #fff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .file-upload {
+            margin-left: 10px;
         }
     </style>
 </head>
-
 <body>
     <section id="hero">
         <div class="hero-section-container">
@@ -173,47 +160,67 @@
 
             <div class="user-page">
                 <h1 class="title">Lab Dashboard</h1>
-                <div class="options-container">
-                    <div class="option-box">
-                        <h2>Add Lab Report</h2>
-                        <form id="lab-report-form">
-                            <select name="patient_id" required>
-                                <option value="">Select Patient</option>
-                                {% for patient in patients %}
-                                    <option value="{{ patient.id }}">{{ patient.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <textarea name="report_data" placeholder="Enter lab report data" required></textarea>
-                            <button type="submit">Add Lab Report</button>
-                        </form>
+                <div class="boxes-container">
+                    <!-- Pending Lab Reports -->
+                    <div class="box">
+                        <h2>Pending Lab Requests</h2>
+                        <ul>
+                            {% for report in pending_reports %}
+                                <li data-report-id="{{ report.id }}">
+                                    <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
+                                    <button class="status-btn waiting" onclick="markCollected(this)">Waiting</button>
+                                </li>
+                            {% empty %}
+                                <li>No pending lab requests.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- Collected Lab Reports -->
+                    <div class="box">
+                        <h2>Collected Lab Requests</h2>
+                        <ul>
+                            {% for report in collected_reports %}
+                                <li data-report-id="{{ report.id }}">
+                                    <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
+                                    <div>
+                                        <input type="file" class="file-upload" onchange="enableButton(this)">
+                                        <button class="status-btn collected disabled" onclick="markCompleted(this)">Waiting</button>
+                                    </div>
+                                </li>
+                            {% empty %}
+                                <li>No collected lab requests.</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
 
-                <h2 style="color: #fff; text-align: center; margin: 20px 0;">Lab Reports</h2>
-                <ul>
-                    {% for report in reports %}
-                        <li>{{ report.patient.name }} - {{ report.report_data }} - {{ report.created_at }}</li>
-                    {% endfor %}
-                </ul>
+                <!-- Completed Lab Reports -->
+                <div class="completed-container">
+                    <h2>Completed Lab Reports</h2>
+                    <ul>
+                        {% for report in completed_reports %}
+                            <li>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }} - Completed on {{ report.updated_at }}</li>
+                        {% empty %}
+                            <li>No completed lab reports.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#lab-report-form').on('submit', function(e) {
-                e.preventDefault();
-                const patientId = $('select[name="patient_id"]').val();
-                const reportData = $('textarea[name="report_data"]').val();
+        function markCollected(button) {
+            const reportId = button.parentElement.getAttribute('data-report-id');
+            if (confirm("Are you sure you want to mark this sample as collected?")) {
                 $.ajax({
-                    url: '{% url "add_lab_report" %}',
+                    url: '{% url "mark_collected" %}',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        patient_id: patientId,
-                        report_data: reportData
-                    }),
+                    data: {
+                        report_id: reportId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
                     success: function(response) {
                         alert(response.message);
                         location.reload();
@@ -223,8 +230,49 @@
                         alert('Error: ' + error);
                     }
                 });
-            });
-        });
+            }
+        }
+
+        function enableButton(input) {
+            const li = input.parentElement.parentElement;
+            const reportId = li.getAttribute('data-report-id');
+            const button = li.querySelector('.status-btn');
+            if (input.files.length > 0) {
+                button.classList.remove('disabled');
+            } else {
+                button.classList.add('disabled');
+            }
+        }
+
+        function markCompleted(button) {
+            const li = button.parentElement.parentElement;
+            const reportId = li.getAttribute('data-report-id');
+            if (button.classList.contains('disabled')) {
+                return;
+            }
+            if (confirm("Are you sure you want to mark this lab report as completed?")) {
+                const fileInput = li.querySelector('.file-upload');
+                const formData = new FormData();
+                formData.append('report_id', reportId);
+                formData.append('report_data', fileInput.files[0]);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                $.ajax({
+                    url: '{% url "mark_completed" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error';
+                        alert('Error: ' + error);
+                    }
+                });
+            }
+        }
     </script>
 </body>
 </html>

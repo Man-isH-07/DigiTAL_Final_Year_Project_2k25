@@ -1,11 +1,47 @@
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from .models import MedicalRecord
+from appointments.models import Appointment
+
+def role_required(role):
+    def decorator(view_func):
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated and request.user.role == role:
+                return view_func(request, *args, **kwargs)
+            return HttpResponseForbidden("You don't have permission to access this page.")
+        return _wrapped_view
+    return decorator
 
 @login_required
-def patient_reports(request):
-    reports = MedicalRecord.objects.filter(user=request.user)
-    return render(request, 'medical_records/patient_reports.html', {'reports': reports})
+@role_required('doctor')
+def medical_records_list(request):
+    if request.user.role != 'doctor':
+        return HttpResponseForbidden("Only doctors can access this page.")
+
+    try:
+        doctor = request.user.doctor_profile
+    except Doctor.DoesNotExist:
+        return HttpResponseForbidden("No doctor profile found for this user.")
+
+    # Get all appointments for this doctor
+    appointments = Appointment.objects.filter(doctor=doctor)
+    patient_names = appointments.values_list('patient_name', flat=True)
+    
+    # Get medical records for patients the doctor has treated
+    medical_records = MedicalRecord.objects.filter(patient_name__in=patient_names).order_by('-created_at')
+
+    return render(request, 'medical_records/medical_records_list.html', {
+        'medical_records': medical_records,
+        'doctor': doctor
+    })
+
+# Reusing the role_required decorator from users/views.py
+def role_required(role):
+    def decorator(view_func):
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated and request.user.role == role:
+                return view_func(request, *args, **kwargs)
+            return HttpResponseForbidden("You don't have permission to access this page.")
+        return _wrapped_view
+    return decorator

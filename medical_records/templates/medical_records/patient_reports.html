@@ -1,8 +1,0 @@
-<h2>My Reports</h2>
-<ul>
-    {% for report in reports %}
-        <li>
-            <a href="{{ report.report.url }}">{{ report.description }}</a> (Uploaded: {{ report.uploaded_at }})
-        </li>
-    {% endfor %}
-</ul>

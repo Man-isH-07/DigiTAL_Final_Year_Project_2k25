@@ -11,4 +11,5 @@ urlpatterns = [
     path('fetch_patient_timer/', views.fetch_patient_timer, name='fetch_patient_timer'),
     path('save_patient_timer/', views.save_patient_timer, name='save_patient_timer'),
     path('live_wait_time/<int:appointment_id>/', views.live_wait_time_detail, name='live_wait_time_detail'),
+    path('fetch_session_status/', views.fetch_session_status, name='fetch_session_status'),  # New endpoint
 ]

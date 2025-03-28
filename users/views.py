@@ -21,10 +21,15 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
-from appointments.models import Appointment
+from appointments.models import Appointment, SessionHistory
 from doctors.models import Doctor
 from datetime import datetime
 from medical_records.models import MedicalRecord
+from lab_report.models import LabTest, Patient, LabReport
+import base64
+from django.core.files.base import ContentFile
+import uuid
+import json
 
 User = get_user_model()
 
@@ -73,7 +78,7 @@ def admin_dashboard(request):
                 errors.append("Username already exists.")
             if CustomUser.objects.filter(email=email).exists():
                 errors.append("Email already exists.")
-            if role not in ['admin', 'doctor', 'desk', 'user', 'lab_technician', 'cashier']:
+            if role not in ['admin', 'doctor', 'desk', 'user', 'lab_technician']:
                 errors.append("Invalid role selected.")
 
             if not errors:
@@ -105,9 +110,6 @@ def admin_dashboard(request):
         'doctors': doctors
     })
 
-
-
-
 def register_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -117,7 +119,6 @@ def register_view(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'users/register.html', {'form': form})
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -138,9 +139,7 @@ def login_view(request):
                 elif user.role == 'user':
                     return redirect('user_dashboard')
                 elif user.role == 'lab_technician':
-                    return redirect('lab_dashboard')  # Ensure this URL is defined
-                elif user.role == 'cashier':
-                    return redirect('cashier_dashboard')  # Ensure this URL is defined
+                    return redirect('lab_dashboard')
             else:
                 return render(request, 'users/login.html', {'error': 'Role mismatch. Please select the correct role.'})
         else:
@@ -154,14 +153,6 @@ def logout_view(request):
 @login_required
 def user_dashboard(request):
     return render(request, 'users/user_dashboard.html')
-
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from appointments.models import Appointment
-from doctors.models import Doctor
-from datetime import datetime
 
 @login_required
 def desk_dashboard(request):
@@ -189,7 +180,7 @@ def desk_dashboard(request):
                 return redirect('desk_dashboard')
 
             time_obj = datetime.strptime(time, "%H:%M").time()
-            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+            date_obj = datetime.strptime(date, '%Y-%m-d').date()
 
             appointment = Appointment.objects.create(
                 user=request.user,
@@ -206,6 +197,12 @@ def desk_dashboard(request):
                 appointments=[appointment],
                 subject="Appointment Booking Confirmation",
                 message="Your appointment has been successfully booked with DigiTAL."
+            )
+
+            # Create or get Patient instance
+            patient, created = Patient.objects.get_or_create(
+                email=email,
+                defaults={'name': name, 'phone': phone}
             )
 
             messages.success(request, "Appointment booked successfully!")
@@ -227,56 +224,86 @@ def doctor_dashboard(request):
         return HttpResponseForbidden("Only doctors can access this page.")
 
     try:
-        doctor = request.user.doctor_profile  # Access the linked Doctor profile via the related_name
+        doctor = request.user.doctor_profile
     except Doctor.DoesNotExist:
         return HttpResponseForbidden("No doctor profile found for this user. Please contact the admin to create a doctor profile.")
 
     current_date = datetime.now().date()
-    appointments = Appointment.objects.filter(
+    active_session = SessionHistory.objects.filter(
         doctor=doctor,
         date=current_date,
-        status='Pending'
-    ).order_by('time')  # Queue based on time slots
+        is_active=True
+    ).first()
+
+    current_patient = None
+    if active_session:
+        current_patient = active_session.current_patient
 
     if request.method == 'POST':
         if 'prescription' in request.POST:
             patient_id = request.POST.get('patient_id')
-            prescription_data = request.POST.get('prescription_data')
-            if patient_id and prescription_data:
+            prescription_image_data = request.POST.get('prescription_image')
+            if patient_id and prescription_image_data:
                 appointment = get_object_or_404(Appointment, id=patient_id)
-                patient = appointment.user  # Assuming Appointment has a user field
+                format, imgstr = prescription_image_data.split(';base64,')
+                ext = format.split('/')[-1]
+                image_file = ContentFile(base64.b64decode(imgstr), name=f'prescription_{uuid.uuid4()}.{ext}')
                 MedicalRecord.objects.create(
-                    patient=patient,
+                    patient_name=appointment.patient_name,
+                    doctor=request.user,
                     record_type='Prescription',
-                    data=prescription_data
+                    data='',
+                    prescription_image=image_file
                 )
+                appointment.status = 'Completed'
+                appointment.save()
                 messages.success(request, "Prescription saved successfully!")
+                return redirect('doctor_dashboard')
         elif 'lab_request' in request.POST:
             patient_id = request.POST.get('patient_id')
-            lab_request = request.POST.get('lab_request')
-            if patient_id and lab_request:
+            lab_requests = request.POST.getlist('lab_requests[]')
+            if patient_id and lab_requests:
                 appointment = get_object_or_404(Appointment, id=patient_id)
-                patient = appointment.user
-                MedicalRecord.objects.create(
-                    patient=patient,
-                    record_type='LabRequest',
-                    data=lab_request
+                # Add new tests to LabTest model if they don't exist
+                for test_name in lab_requests:
+                    if not LabTest.objects.filter(name=test_name).exists():
+                        LabTest.objects.create(name=test_name)
+                # Create or get Patient instance
+                patient, created = Patient.objects.get_or_create(
+                    email=appointment.patient_email,
+                    defaults={'name': appointment.patient_name, 'phone': appointment.patient_contact}
                 )
+                # Create LabReport with status "Pending"
+                lab_report = LabReport.objects.create(
+                    patient=patient,
+                    tests=json.dumps(lab_requests),
+                    status='Pending'
+                )
+                # Create MedicalRecord and link to LabReport
+                MedicalRecord.objects.create(
+                    patient_name=appointment.patient_name,
+                    doctor=request.user,
+                    record_type='LabRequest',
+                    data=json.dumps(lab_requests),
+                    lab_report=lab_report
+                )
+                appointment.status = 'Completed'
+                appointment.save()
                 messages.success(request, "Lab request saved successfully!")
+                return redirect('doctor_dashboard')
+        else:
+            messages.error(request, "Invalid form submission.")
 
     return render(request, 'users/doctor_dashboard.html', {
-        'appointments': appointments,
-        'doctor': doctor
+        'doctor': doctor,
+        'current_date': current_date,
+        'active_session': active_session,
+        'current_patient': current_patient
     })
-
 
 @login_required
 def secure_view(request):
     return render(request, 'secure_page.html')
-
-
-
-
 
 @login_required
 def edit_user(request, user_id):
@@ -293,7 +320,7 @@ def edit_user(request, user_id):
         errors = []
         if not username or not email or not role:
             errors.append("All fields are required.")
-        if role not in ['admin', 'doctor', 'desk', 'user']:
+        if role not in ['admin', 'doctor', 'desk', 'user', 'lab_technician']:
             errors.append("Invalid role selected.")
         if CustomUser.objects.filter(username=username).exclude(id=user_id).exists():
             errors.append("Username already exists.")
@@ -316,7 +343,6 @@ def edit_user(request, user_id):
         'user': user,
     })
 
-
 @login_required
 def delete_user(request, user_id):
     if request.user.role != 'admin':
@@ -325,5 +351,3 @@ def delete_user(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     user.delete()
     return redirect('admin_dashboard')
-
-
