@@ -19,7 +19,7 @@ def add_initial_lab_tests(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('lab_report', '0002_labreport_status_tests'),  # Adjust based on your last migration
+        ('lab_report', '0002_initial'),
     ]
 
     operations = [

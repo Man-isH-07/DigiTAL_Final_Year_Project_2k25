@@ -8,7 +8,6 @@ class CustomUser(AbstractUser):
         ('desk', 'Desk'),
         ('user', 'User'),
         ('lab_technician', 'Lab Technician'),  # Add this
-        ('cashier', 'Cashier'),  # Add this for the cashier dashboard
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
 

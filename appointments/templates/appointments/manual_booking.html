@@ -77,9 +77,35 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            justify-content: space-between;
             padding: 5px 15px;
             margin: 20px;
             z-index: 1;
+        }
+
+        .back_btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 5px;
+            background-color: rgb(0, 225, 225);
+            color: black;
+            border: none;
+            cursor: pointer;
+            height: fit-content;
+            width: fit-content;
+            font-size: large;
+        }
+
+        .back_btn:hover {
+            background-color: rgb(115, 255, 255);
+            color: black;
+            font-weight: bold;
+        }
+
+        .back_btn a{
+            color: black;
         }
 
         .logo {
@@ -310,6 +336,7 @@
             <div class="hero-section-container">
                 <header>
                     <a class="logo" href="#hero">Digi<span>TAL</span></a> <!--Left Section-->
+                    <button type="submit" class="back_btn"><a href="{% url 'user_dashboard' %}">Back</a></button>
                 </header>
                 <div class="login-container">
 
@@ -381,11 +408,10 @@
                             </div>
 
                             <div class="group">
-                                <button type="submit" class="add_pat">Book Appointment</button>
+                                <button type="submit" class="add_pat">Book Appointment</button>    
                             </div>
                         </form>
                     </div>
-
                 </div>
             </div>
         </section>

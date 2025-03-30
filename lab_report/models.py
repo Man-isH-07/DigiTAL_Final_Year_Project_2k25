@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+import json
 
 class Patient(models.Model):
     user = models.ForeignKey(

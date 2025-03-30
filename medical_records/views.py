@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
-from .models import MedicalRecord
+from .models import MedicalRecord 
 from appointments.models import Appointment
+from doctors.models import Doctor
+
 
 def role_required(role):
     def decorator(view_func):
@@ -35,13 +37,3 @@ def medical_records_list(request):
         'medical_records': medical_records,
         'doctor': doctor
     })
-
-# Reusing the role_required decorator from users/views.py
-def role_required(role):
-    def decorator(view_func):
-        def _wrapped_view(request, *args, **kwargs):
-            if request.user.is_authenticated and request.user.role == role:
-                return view_func(request, *args, **kwargs)
-            return HttpResponseForbidden("You don't have permission to access this page.")
-        return _wrapped_view
-    return decorator

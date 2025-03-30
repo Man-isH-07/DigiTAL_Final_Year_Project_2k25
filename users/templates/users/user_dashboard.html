@@ -329,6 +329,20 @@
             border-radius: 30%;
         }
 
+        .lab_dash {
+            background: rgb(220, 255, 255);
+            color: #fff;
+        }
+
+        .lab_dash img {
+            background-color: white;
+            width: 10vw;
+            height: 20vh;
+            padding: 35px;
+            border: none;
+            border-radius: 30%;
+        }
+
         .patient-report {
             background: linear-gradient(135deg, #ffafbd, #ffc3a0);
             color: #fff;
@@ -796,11 +810,6 @@
                             <p>Book your appointment manually with ease.</p>
                         </div>
                     </a>
-                    <div class="option-box ai-booking">
-                        <h2>AI-Based Booking</h2>
-                        <p>Let AI help you find the best available slots.</p>
-                        <a href="/"><button class="btn"><img src="{% static 'img/down.gif' %}" alt=""></button></a>
-                    </div>
                     <a href="{% url 'appointment_history' %}">
                         <div class="option-box live_wait">
                             <img src="{% static 'img/wait_time.gif' %}" alt="">
@@ -808,21 +817,15 @@
                             <p>Easy access to previous visits.</p>
                         </div>
                     </a>
-                    <!-- New options -->
                     <a href="{% url 'lab_dashboard' %}">
-                        <div class="option-box">
+                        <div class="option-box lab_dash">
                             <img src="{% static 'img/lab.gif' %}" alt="">
                             <h2>Lab Dashboard</h2>
                             <p>Input and manage lab reports.</p>
                         </div>
                     </a>
-                    <a href="{% url 'cashier_dashboard' %}">
-                        <div class="option-box">
-                            <img src="{% static 'img/pharmacy_bill.gif' %}" alt="">
-                            <h2>Cashier Dashboard</h2>
-                            <p>Manage billing and pharmacy bills.</p>
-                        </div>
-                    </a>
+                    
+                    
                 </div>
             </div>
 
