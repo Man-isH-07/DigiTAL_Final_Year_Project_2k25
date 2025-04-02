@@ -139,7 +139,7 @@
                     });
                 }
             });
-
+    
             function updateTopBar() {
                 var today = new Date();
                 $('#todayDate').text(today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
@@ -147,17 +147,18 @@
                 setTimeout(updateTopBar, 1000);
             }
             updateTopBar();
-
+    
             let timerInterval = null;
             let remainingSeconds = 1200; // Default to 20 minutes
             let isAddingTime = false;
-
+            let currentPatientId = '{{ current_patient.id|default:"" }}';
+    
             function updatePatientTimer(seconds) {
                 if (timerInterval) {
                     clearInterval(timerInterval);
                 }
                 remainingSeconds = seconds;
-
+    
                 function update() {
                     if (remainingSeconds > 0) {
                         let minutes = Math.floor(remainingSeconds / 60);
@@ -180,11 +181,11 @@
                         clearInterval(timerInterval);
                     }
                 }
-
+    
                 update();
                 timerInterval = setInterval(update, 1000);
             }
-
+    
             function initializeTimer() {
                 $.get("{% url 'fetch_patient_timer' %}", function(data) {
                     if (data.success) {
@@ -198,35 +199,58 @@
                     updatePatientTimer(1200);
                 });
             }
-
+    
             var sessionStarted = '{{ session_started|lower }}' === 'true';
             var currentPatientExists = '{{ current_patient|default:"" }}' !== '';
-
+    
             if (sessionStarted && currentPatientExists) {
                 initializeTimer();
             }
-
+    
             function fetchWaitingTimes() {
-            $.get("{% url 'fetch_wait_times' %}?format=minutes", function(data) {
-                data.wait_times.forEach(function(entry) {
-                    $("#wait-time-" + entry.id).text(entry.wait_time + " min");
-                    $("#status-" + entry.id).text(entry.status);
+                $.get("{% url 'fetch_wait_times' %}?format=minutes", function(data) {
+                    data.wait_times.forEach(function(entry) {
+                        $("#wait-time-" + entry.id).text(entry.wait_time + " min");
+                        $("#status-" + entry.id).text(entry.status);
+                    });
+                }).fail(function(xhr, status, error) {
+                    console.error('AJAX error fetching wait times:', error);
                 });
-            }).fail(function(xhr, status, error) {
-                console.error('AJAX error fetching wait times:', error);
-            });
-        }
-        setInterval(fetchWaitingTimes, 1000);
-
+            }
+            setInterval(fetchWaitingTimes, 1000);
+    
+            // Periodically check the session status to update the current patient
+            function checkSessionStatus() {
+                $.get("{% url 'fetch_session_status' %}", function(data) {
+                    if (data.success) {
+                        if (!data.is_active) {
+                            // Session has ended, reload the page to reflect the change
+                            location.reload();
+                        } else {
+                            var newPatientId = data.current_patient_id || '';
+                            if (newPatientId !== currentPatientId) {
+                                // Current patient has changed, reload the page to update the UI
+                                location.reload();
+                            }
+                        }
+                    } else {
+                        console.error('Failed to fetch session status:', data.error);
+                    }
+                }).fail(function(xhr, status, error) {
+                    console.error('AJAX error fetching session status:', error);
+                });
+            }
+            setInterval(checkSessionStatus, 5000); // Check every 5 seconds
+    
             $('.action-btn').click(function(e) {
                 e.preventDefault();
                 var appointmentId = $(this).data('id');
                 var action = $(this).data('action');
-
+    
                 if (action === 'add_time' && isAddingTime) {
                     return;
                 }
-
+    
                 $.ajax({
                     url: '{% url "update_queue_status" %}',
                     method: 'POST',
@@ -259,31 +283,12 @@
                                 });
                             } else if (action === 'treated') {
                                 alert('Patient treated! Moving to next.');
-                                $(`tr[data-id="${appointmentId}"]`).remove();
-
-                                if (response.next_patient) {
-                                    $('#currentPatientName').text(response.next_patient_name);
-                                    updatePatientTimer(1200);
-                                    $.get("{% url 'fetch_patient_timer' %}", function(data) {
-                                        if (data.success) {
-                                            updatePatientTimer(data.current_patient_timer);
-                                        } else {
-                                            console.error('Failed to fetch timer:', data.error);
-                                            updatePatientTimer(1200);
-                                        }
-                                    }).fail(function(xhr, status, error) {
-                                        console.error('AJAX error fetching timer:', error);
-                                        updatePatientTimer(1200);
-                                    });
-                                } else {
-                                    $('#currentPatientName').text('No more patients.');
-                                    $('#patientTimer').text('00:00');
-                                }
+                                location.reload(); // Reload the page to update the UI
                             } else if (action === 'skip') {
                                 alert('Patient skipped! Swapping with next.');
                                 location.reload();
                             }
-
+    
                             fetchWaitingTimes();
                         } else {
                             alert('Error: ' + response.error);
@@ -299,7 +304,7 @@
                     }
                 });
             });
-
+    
             function fetchUpdatedTimer() {
                 $.get("{% url 'fetch_patient_timer' %}", function(data) {
                     if (data.success) {
@@ -313,9 +318,10 @@
                     updatePatientTimer(1200);
                 });
             }
-            fetchUpdatedTimer();
+            setInterval(fetchUpdatedTimer, 5000); // Update timer every 5 seconds
         });
     </script>
+    <!-- changingnow -->
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91e035fcf94fbad4',t:'MTc0MTU4MjQzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

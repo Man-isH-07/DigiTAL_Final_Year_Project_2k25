@@ -348,6 +348,78 @@
             color: #fff;
         }
 
+        /* New styles for lab reports modal */
+        .lab-reports-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lab-reports-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .lab-reports-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .lab-reports-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .lab-reports-content li {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .lab-reports-content a {
+            color: #00c4cc;
+            text-decoration: none;
+        }
+
+        .lab-reports-content a:hover {
+            text-decoration: underline;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .close-modal:hover {
+            background: #cc0000;
+        }
+
         /* Features Section */
         .features-section {
             padding: 20px;
@@ -714,56 +786,7 @@
         #step-input button:hover {
             background: #0099a6;
         }
-        #step-input {
-            padding: 15px;
-            border: 2px solid #00c4cc;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.9);
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-        }
 
-        #step-input select,
-        #step-input input[type="text"],
-        #step-input input[type="date"] {
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #00c4cc;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: #fff;
-        }
-
-        #step-input .radio-group {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
-
-        #step-input .radio-group label {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-        }
-
-        #step-input button {
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            background: #00c4cc;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        #step-input button:hover {
-            background: #0099a6;
-        }
-    
         #chatbot-close {
             position: absolute;
             top: 10px;
@@ -785,8 +808,6 @@
         #chatbot-close:hover {
             background: #cc0000;
         }
-
-       
     </style>
 </head>
 
@@ -817,15 +838,35 @@
                             <p>Easy access to previous visits.</p>
                         </div>
                     </a>
-                    <a href="{% url 'lab_dashboard' %}">
-                        <div class="option-box lab_dash">
+                    <a href="{% url 'user_reports_and_prescriptions' %}">
+                        <div class="option-box patient-report">
                             <img src="{% static 'img/lab.gif' %}" alt="">
-                            <h2>Lab Dashboard</h2>
-                            <p>Input and manage lab reports.</p>
+                            <h2>Your Lab Reports and Prescriptions</h2>
+                            <p>View your completed lab reports and prescriptions.</p>
                         </div>
                     </a>
-                    
-                    
+                </div>
+            </div>
+
+            <!-- Lab Reports Modal -->
+            <div id="labReportsModal" class="lab-reports-modal">
+                <div class="lab-reports-content">
+                    <button class="close-modal" onclick="closeLabReportsModal()">X</button>
+                    <h2>Your Lab Reports</h2>
+                    <ul>
+                        {% for report in lab_reports %}
+                            <li>
+                                Tests: {{ report.get_tests|join:", " }} - Completed on {{ report.updated_at }}
+                                {% if report.report_data %}
+                                    <a href="{{ report.report_data.url }}" target="_blank">View Report</a>
+                                {% else %}
+                                    <span>No report file available</span>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li>No lab reports available.</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
 
@@ -1208,8 +1249,18 @@
                     }
                 });
             });
+
+            // Close modal when clicking outside of it
+            window.onclick = function(event) {
+                const modal = document.getElementById('labReportsModal');
+                if (event.target == modal) {
+                    closeLabReportsModal();
+                }
+            };
+            
         });
     </script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'929854d6bb764505',t:'MTc0MzUxMzA3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 
 </html>

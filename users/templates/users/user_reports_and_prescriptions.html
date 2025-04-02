@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports and Prescriptions | DigiTAL</title>
+
+    <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            border: none;
+            text-decoration: none;
+            font-family: "Fredoka", sans-serif;
+            letter-spacing: 1px;
+        }
+
+        body {
+            background-image: url('{% static "img/backgrd.svg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #hero {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            z-index: 0;
+        }
+
+        .hero-section-container {
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            height: fit-content;
+            width: 90vw;
+            border-radius: 30px;
+            border: 2px solid rgba(211, 211, 211, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 15px;
+            margin: 20px;
+            z-index: 1;
+        }
+
+        .logoutBtn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: lightcoral;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            width: 5vw;
+        }
+
+        .logoutBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .logoutBtn a {
+            color: white;
+            font-weight: bolder;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .logo span {
+            color: rgb(0, 225, 225);
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .user-page {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        /* Back to Dashboard Button */
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgb(0, 225, 225);
+            color: black;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: rgb(115, 255, 255);
+            color: black;
+        }
+
+        /* Reports and Prescriptions Section */
+        .reports-section {
+            padding: 20px;
+            margin: 20px;
+            background-color: #e3f2fd;
+            text-align: center;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .reports-column {
+            flex: 1;
+            max-height: 500px; /* Set a max height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 10px;
+        }
+
+        .reports-column h2 {
+            margin: 0px 0px 20px 0px;
+            color: #333;
+        }
+
+        .reports-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .report-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .report-box h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .report-box p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .report-box a {
+            color: #00c4cc;
+            text-decoration: none;
+        }
+
+        .report-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer Section */
+        .footer-section {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero section -->
+    <section id="hero">
+        <div class="hero-section-container">
+            <header>
+                <a class="logo" href="{% url 'user_dashboard' %}">Digi<span>TAL</span></a>
+                <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
+            </header>
+
+            <div class="user-page">
+                <h1 class="title">Your Lab Reports and Prescriptions</h1>
+
+                <!-- Back to Dashboard Button -->
+                <a href="{% url 'user_dashboard' %}" class="back-btn">Back to Dashboard</a>
+
+                <!-- Reports and Prescriptions Section -->
+                <section class="reports-section">
+                    <!-- Prescriptions (Left) -->
+                    <div class="reports-column">
+                        <h2>Prescriptions</h2>
+                        <div class="reports-container">
+                            {% for prescription in prescriptions %}
+                                <div class="report-box">
+                                    <h3>Prescription for {{ prescription.patient_name }}</h3>
+                                    <p>Issued by: Dr. {{ prescription.doctor.username }}</p>
+                                    <p>Issued on: {{ prescription.created_at }}</p>
+                                    {% if prescription.prescription_image %}
+                                        <a href="{{ prescription.prescription_image.url }}" target="_blank">View Prescription</a>
+                                    {% else %}
+                                        <p>No prescription image available</p>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <div class="report-box">
+                                    <p>No prescriptions available.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Lab Reports (Right) -->
+                    <div class="reports-column">
+                        <h2>Lab Reports</h2>
+                        <div class="reports-container">
+                            {% for report in lab_reports %}
+                                <div class="report-box">
+                                    <h3>Lab Report for {{ report.patient.name }}</h3>
+                                    <p>Tests: {{ report.get_tests|join:", " }}</p>
+                                    <p>Completed on: {{ report.updated_at }}</p>
+                                    {% if report.report_data %}
+                                        <a href="{{ report.report_data.url }}" target="_blank">View Report</a>
+                                    {% else %}
+                                        <p>No report file available</p>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <div class="report-box">
+                                    <p>No lab reports available.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer Section -->
+                <footer class="footer-section">
+                    <p>© 2024 DigiTAL. All Rights Reserved.</p>
+                </footer>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

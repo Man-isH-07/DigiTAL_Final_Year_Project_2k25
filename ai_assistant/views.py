@@ -7,9 +7,13 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from .models import SymptomMapping
 import spacy
+import logging  # Add this import for logging
+from lab_report.models import Patient  # Add this import for Patient model
 
 nlp = spacy.load("en_ner_bc5cdr_md")
 
+# Configure logging
+logger = logging.getLogger(__name__)
 
 @login_required
 def analyze_symptoms(request):
@@ -107,6 +111,27 @@ def book_appointment_api(request):
                 status='Pending'
             )
 
+            # Create or update Patient instance
+            try:
+                patient = Patient.objects.get(email=email)
+                # If the patient's name or phone doesn't match, update it
+                if patient.name != name or patient.phone != phone:
+                    patient.name = name
+                    patient.phone = phone
+                    patient.save()
+                    logger.info(f"Updated patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+            except Patient.DoesNotExist:
+                try:
+                    patient = Patient.objects.create(
+                        email=email,
+                        name=name,
+                        phone=phone
+                    )
+                    logger.info(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+                except Exception as e:
+                    logger.error(f"Error creating patient: {e}")
+                    return JsonResponse({'error': f"Failed to create patient: {e}"}, status=500)
+
             send_session_notification(
                 appointments=[appointment],
                 subject="Appointment Booking Confirmation",
@@ -115,5 +140,6 @@ def book_appointment_api(request):
 
             return JsonResponse({'message': 'Appointment booked successfully!'})
         except Exception as e:
+            logger.error(f"Error in book_appointment_api: {e}")
             return JsonResponse({'error': str(e)}, status=500)
     return JsonResponse({'error': 'Invalid request method'}, status=405)

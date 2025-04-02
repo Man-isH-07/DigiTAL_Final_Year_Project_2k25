@@ -12,6 +12,7 @@ from django import forms
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from lab_report.models import Patient
 import logging
 
 # Configure logging
@@ -55,6 +56,28 @@ def manual_booking(request):
             symptoms=symptoms,
             status='Pending'
         )
+
+        # Create or update Patient instance
+        try:
+            patient = Patient.objects.get(email=email)
+            # If the patient's name or phone doesn't match, update it
+            if patient.name != name or patient.phone != contact:
+                patient.name = name
+                patient.phone = contact
+                patient.save()
+                logger.info(f"Updated patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+        except Patient.DoesNotExist:
+            try:
+                patient = Patient.objects.create(
+                    email=email,
+                    name=name,
+                    phone=contact
+                )
+                logger.info(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+            except Exception as e:
+                messages.error(request, f"Failed to create patient: {e}")
+                logger.error(f"Error creating patient: {e}")
+                return redirect('manual_booking')
 
         send_session_notification(
             appointments=[appointment],
@@ -179,7 +202,19 @@ def virtual_waiting_room(request):
             status='Pending'
         ).order_by('queue_position')
 
-        session_started = True
+        # If there are no Pending appointments, end the session
+        if not appointments.exists():
+            active_session.is_active = False
+            active_session.end_time = timezone.now()
+            active_session.duration_minutes = (active_session.end_time - active_session.start_time).total_seconds() // 60
+            active_session.save()
+            active_session = None  # Clear the active session
+            current_patient = None
+            session_start_time = None
+            appointments = None
+            session_started = False
+        else:
+            session_started = True
 
     if request.method == 'POST' and 'filter_queue' in request.POST:
         queue_form = QueueFilterForm(request.POST)
@@ -401,7 +436,10 @@ def update_queue_status(request):
 
             current_patient_id = active_session.current_patient.id if active_session.current_patient else None
 
-            if action == 'add_time' and str(current_patient_id) == str(appointment_id):
+            if action == 'add_time':
+                # Validate that the appointment is still the current patient
+                if str(current_patient_id) != str(appointment_id):
+                    return JsonResponse({'success': False, 'error': 'This patient is no longer the current patient.'})
                 current_timer = active_session.patient_timer or 1200
                 if current_timer < 3000:
                     updated_timer = current_timer + 300
@@ -476,7 +514,7 @@ def fetch_patient_timer(request):
         return JsonResponse({"success": True, "current_patient_timer": int(remaining_seconds)})
     else:
         return JsonResponse({"success": False, "error": "No active session found."})
-
+    
 @login_required
 @csrf_exempt
 def save_patient_timer(request):
@@ -496,7 +534,7 @@ def fetch_wait_times(request):
     user = request.user
     active_session = SessionHistory.objects.filter(is_active=True).first()
     wait_times = []
-    time_format = request.GET.get('format', 'seconds') 
+    time_format = request.GET.get('format', 'seconds')
 
     user_appointments = Appointment.objects.filter(user=user).order_by('date', 'time')
 

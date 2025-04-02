@@ -30,6 +30,13 @@ import base64
 from django.core.files.base import ContentFile
 import uuid
 import json
+from django.core.mail import EmailMessage
+from django.conf import settings
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -152,7 +159,95 @@ def logout_view(request):
 
 @login_required
 def user_dashboard(request):
-    return render(request, 'users/user_dashboard.html')
+    if request.user.role != 'user':
+        return HttpResponseForbidden("Only users can access this page.")
+
+    # Get the user's appointments (only completed ones)
+    appointments = Appointment.objects.filter(
+        patient_email=request.user.email,
+        status='Completed'
+    )
+
+    # Get lab reports associated with these appointments
+    lab_reports = []
+    for appointment in appointments:
+        try:
+            patient = Patient.objects.get(email=appointment.patient_email)
+            # Get lab reports for this patient with status 'Completed'
+            reports = LabReport.objects.filter(patient=patient, status='Completed')
+            lab_reports.extend(reports)
+        except Patient.DoesNotExist:
+            continue
+
+    # Get prescriptions associated with these appointments
+    prescriptions = []
+    for appointment in appointments:
+        # Find medical records of type 'Prescription' for this appointment
+        medical_records = MedicalRecord.objects.filter(
+            patient_name=appointment.patient_name,
+            record_type='Prescription',
+            doctor=appointment.doctor.user  # Ensure the doctor matches
+        )
+        prescriptions.extend(medical_records)
+
+    return render(request, 'users/user_dashboard.html', {
+        'lab_reports': lab_reports,
+        'prescriptions': prescriptions  # Pass prescriptions to the template
+    })
+
+@login_required
+def user_reports_and_prescriptions(request):
+    if request.user.role != 'user':
+        return HttpResponseForbidden("Only users can access this page.")
+
+    # Get the user's appointments (only completed ones)
+    appointments = Appointment.objects.filter(
+        patient_email=request.user.email,
+        status='Completed'
+    )
+
+    # Get lab reports associated with these appointments
+    lab_reports = []
+    for appointment in appointments:
+        try:
+            patient = Patient.objects.get(email=appointment.patient_email)
+        except Patient.DoesNotExist:
+            # Create the Patient if it doesn't exist
+            try:
+                patient = Patient.objects.create(
+                    email=appointment.patient_email,
+                    name=appointment.patient_name,
+                    phone=appointment.patient_contact
+                )
+                logger.info(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+            except Exception as e:
+                logger.error(f"Error creating patient: {e}")
+                continue
+        # Get lab reports for this patient with status 'Completed'
+        reports = LabReport.objects.filter(patient=patient, status='Completed')
+        lab_reports.extend(reports)
+
+    # Get prescriptions associated with these appointments
+    prescriptions = []
+    for appointment in appointments:
+        # Find medical records of type 'Prescription' for this appointment
+        medical_records = MedicalRecord.objects.filter(
+            patient_name=appointment.patient_name,
+            record_type='Prescription',
+            doctor=appointment.doctor.user  # Ensure the doctor matches
+        )
+        prescriptions.extend(medical_records)
+
+    # Sort lab reports by updated_at (newest to oldest)
+    lab_reports.sort(key=lambda x: x.updated_at, reverse=True)
+
+    # Sort prescriptions by created_at (newest to oldest)
+    prescriptions.sort(key=lambda x: x.created_at, reverse=True)
+
+    return render(request, 'users/user_reports_and_prescriptions.html', {
+        'lab_reports': lab_reports,
+        'prescriptions': prescriptions
+    })
 
 @login_required
 def desk_dashboard(request):
@@ -199,15 +294,32 @@ def desk_dashboard(request):
                 message="Your appointment has been successfully booked with DigiTAL."
             )
 
-            # Create or get Patient instance
-            patient, created = Patient.objects.get_or_create(
-                email=email,
-                defaults={'name': name, 'phone': phone}
-            )
+            # Create or update Patient instance
+            try:
+                patient = Patient.objects.get(email=email)
+                # If the patient's name or phone doesn't match, update it
+                if patient.name != name or patient.phone != phone:
+                    patient.name = name
+                    patient.phone = phone
+                    patient.save()
+                    print(f"Updated patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+            except Patient.DoesNotExist:
+                try:
+                    patient = Patient.objects.create(
+                        email=email,
+                        name=name,
+                        phone=phone
+                    )
+                    print(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+                except Exception as e:
+                    messages.error(request, f"Failed to create patient: {e}")
+                    print(f"Error creating patient: {e}")
+                    return redirect('desk_dashboard')
 
             messages.success(request, "Appointment booked successfully!")
         except Exception as e:
             messages.error(request, f"An error occurred: {e}")
+            print(f"Error in desk_dashboard: {e}")
 
         return redirect('desk_dashboard')
 
@@ -239,67 +351,98 @@ def doctor_dashboard(request):
     if active_session:
         current_patient = active_session.current_patient
 
+    # Get lab reports requested by this doctor
+    medical_records = MedicalRecord.objects.filter(doctor=request.user, record_type='LabRequest')
+    lab_reports = [record.lab_report for record in medical_records if record.lab_report]
+
     if request.method == 'POST':
-        if 'prescription' in request.POST:
+        if 'save_all' in request.POST:
             patient_id = request.POST.get('patient_id')
             prescription_image_data = request.POST.get('prescription_image')
-            if patient_id and prescription_image_data:
-                appointment = get_object_or_404(Appointment, id=patient_id)
-                format, imgstr = prescription_image_data.split(';base64,')
-                ext = format.split('/')[-1]
-                image_file = ContentFile(base64.b64decode(imgstr), name=f'prescription_{uuid.uuid4()}.{ext}')
-                MedicalRecord.objects.create(
-                    patient_name=appointment.patient_name,
-                    doctor=request.user,
-                    record_type='Prescription',
-                    data='',
-                    prescription_image=image_file
-                )
-                appointment.status = 'Completed'
-                appointment.save()
-                messages.success(request, "Prescription saved successfully!")
-                return redirect('doctor_dashboard')
-        elif 'lab_request' in request.POST:
-            patient_id = request.POST.get('patient_id')
             lab_requests = request.POST.getlist('lab_requests[]')
-            if patient_id and lab_requests:
+            if patient_id:
                 appointment = get_object_or_404(Appointment, id=patient_id)
-                # Add new tests to LabTest model if they don't exist
-                for test_name in lab_requests:
-                    if not LabTest.objects.filter(name=test_name).exists():
-                        LabTest.objects.create(name=test_name)
-                # Create or get Patient instance
-                patient, created = Patient.objects.get_or_create(
-                    email=appointment.patient_email,
-                    defaults={'name': appointment.patient_name, 'phone': appointment.patient_contact}
-                )
-                # Create LabReport with status "Pending"
-                lab_report = LabReport.objects.create(
-                    patient=patient,
-                    tests=json.dumps(lab_requests),
-                    status='Pending'
-                )
-                # Create MedicalRecord and link to LabReport
-                MedicalRecord.objects.create(
-                    patient_name=appointment.patient_name,
-                    doctor=request.user,
-                    record_type='LabRequest',
-                    data=json.dumps(lab_requests),
-                    lab_report=lab_report
-                )
-                appointment.status = 'Completed'
-                appointment.save()
-                messages.success(request, "Lab request saved successfully!")
+                # Save Prescription
+                if prescription_image_data:
+                    format, imgstr = prescription_image_data.split(';base64,')
+                    ext = format.split('/')[-1]
+                    image_file = ContentFile(base64.b64decode(imgstr), name=f'prescription_{uuid.uuid4()}.{ext}')
+                    medical_record = MedicalRecord.objects.create(
+                        patient_name=appointment.patient_name,
+                        doctor=request.user,
+                        record_type='Prescription',
+                        data='',
+                        prescription_image=image_file
+                    )
+                    # Send email to patient with the prescription
+                    patient_email = appointment.patient_email
+                    subject = 'Your Prescription from DigiTEL'
+                    message = f'Dear {appointment.patient_name},\n\nPlease find your prescription attached.\n\nBest regards,\nDigiTEL Team'
+                    email = EmailMessage(
+                        subject,
+                        message,
+                        settings.EMAIL_HOST_USER,
+                        [patient_email],
+                    )
+                    email.attach_file(medical_record.prescription_image.path)
+                    email.send()
+                # Save Lab Request
+                if lab_requests:
+                    for test_name in lab_requests:
+                        if not LabTest.objects.filter(name=test_name).exists():
+                            LabTest.objects.create(name=test_name)
+                    # Create or update Patient instance
+                    try:
+                        patient = Patient.objects.get(email=appointment.patient_email)
+                        # If the patient's name or phone doesn't match, update it
+                        if patient.name != appointment.patient_name or patient.phone != appointment.patient_contact:
+                            patient.name = appointment.patient_name
+                            patient.phone = appointment.patient_contact
+                            patient.save()
+                            print(f"Updated patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+                    except Patient.DoesNotExist:
+                        try:
+                            patient = Patient.objects.create(
+                                email=appointment.patient_email,
+                                name=appointment.patient_name,
+                                phone=appointment.patient_contact
+                            )
+                            print(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
+                        except Exception as e:
+                            messages.error(request, f"Failed to create patient: {e}")
+                            print(f"Error creating patient: {e}")
+                            return redirect('doctor_dashboard')
+                    lab_report = LabReport.objects.create(
+                        patient=patient,
+                        doctor=request.user,
+                        tests=json.dumps(lab_requests),
+                        status='Pending'
+                    )
+                    MedicalRecord.objects.create(
+                        patient_name=appointment.patient_name,
+                        doctor=request.user,
+                        record_type='LabRequest',
+                        data=json.dumps(lab_requests),
+                        lab_report=lab_report
+                    )
+                # Do NOT change the appointment status to 'Completed'
+                # appointment.status = 'Completed'  # Removed this line
+                # appointment.save()  # No need to save since we're not changing the status
+
+                messages.success(request, "Prescription and lab requests saved successfully!")
                 return redirect('doctor_dashboard')
         else:
             messages.error(request, "Invalid form submission.")
 
     return render(request, 'users/doctor_dashboard.html', {
         'doctor': doctor,
+        'doctor_name': doctor.name,
         'current_date': current_date,
         'active_session': active_session,
-        'current_patient': current_patient
+        'current_patient': current_patient,
+        'lab_reports': lab_reports
     })
+
 
 @login_required
 def secure_view(request):

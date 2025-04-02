@@ -30,6 +30,7 @@ class LabReport(models.Model):
     ]
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_reports',null=True)  # Add doctor field
     tests = models.TextField()  # JSON string of test names
     report_data = models.FileField(upload_to='lab_reports/', null=True, blank=True)  # For uploaded report file
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')

@@ -161,50 +161,48 @@
             <div class="user-page">
                 <h1 class="title">Lab Dashboard</h1>
                 <div class="boxes-container">
-                    <!-- Pending Lab Reports -->
-                    <div class="box">
-                        <h2>Pending Lab Requests</h2>
-                        <ul>
-                            {% for report in pending_reports %}
-                                <li data-report-id="{{ report.id }}">
-                                    <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
-                                    <button class="status-btn waiting" onclick="markCollected(this)">Waiting</button>
-                                </li>
-                            {% empty %}
-                                <li>No pending lab requests.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    <!-- Collected Lab Reports -->
-                    <div class="box">
-                        <h2>Collected Lab Requests</h2>
-                        <ul>
-                            {% for report in collected_reports %}
-                                <li data-report-id="{{ report.id }}">
-                                    <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
-                                    <div>
-                                        <input type="file" class="file-upload" onchange="enableButton(this)">
-                                        <button class="status-btn collected disabled" onclick="markCompleted(this)">Waiting</button>
-                                    </div>
-                                </li>
-                            {% empty %}
-                                <li>No collected lab requests.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+<!-- Pending Lab Reports -->
+<div class="box">
+    <h2>Pending Lab Requests</h2>
+    <ul>
+        {% for report in pending_reports %}
+            <li data-report-id="{{ report.id }}">
+                <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
+                <button class="status-btn waiting" onclick="markCollected(this)">Waiting</button>
+            </li>
+        {% empty %}
+            <li>No pending lab requests.</li>
+        {% endfor %}
+    </ul>
+</div>
+<!-- Collected Lab Reports -->
+<div class="box">
+    <h2>Collected Lab Requests</h2>
+    <ul>
+        {% for report in collected_reports %}
+            <li data-report-id="{{ report.id }}">
+                <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
+                <div>
+                    <input type="file" class="file-upload" onchange="enableButton(this)">
+                    <button class="status-btn collected disabled" onclick="markCompleted(this)">Waiting</button>
                 </div>
-
-                <!-- Completed Lab Reports -->
-                <div class="completed-container">
-                    <h2>Completed Lab Reports</h2>
-                    <ul>
-                        {% for report in completed_reports %}
-                            <li>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }} - Completed on {{ report.updated_at }}</li>
-                        {% empty %}
-                            <li>No completed lab reports.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            </li>
+        {% empty %}
+            <li>No collected lab requests.</li>
+        {% endfor %}
+    </ul>
+</div>
+<!-- Completed Lab Reports -->
+<div class="completed-container">
+    <h2>Completed Lab Reports</h2>
+    <ul>
+        {% for report in completed_reports %}
+            <li>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }} - Completed on {{ report.updated_at }}</li>
+        {% empty %}
+            <li>No completed lab reports.</li>
+        {% endfor %}
+    </ul>
+</div>
             </div>
         </div>
     </section>

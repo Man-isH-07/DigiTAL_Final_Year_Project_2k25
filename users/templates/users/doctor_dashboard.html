@@ -27,9 +27,9 @@
         .dashboard-container { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 20px; }
         .current-patient { margin-bottom: 20px; }
         .current-patient h3, .current-patient p { color: #fff; }
-        .form-section { display: flex; gap: 20px; }
-        form { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
-        form textarea, form input[type="text"] { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #00c4cc; border-radius: 5px; background: #fff; margin-bottom: 10px; }
+        .form-section { display: flex; flex-direction: row; gap: 20px; align-items: flex-start; }
+        .whiteboard-section, .lab-test-section { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
+        .lab-test-section select { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #00c4cc; border-radius: 5px; background: #fff; margin-bottom: 10px; }
         form button { padding: 10px; font-size: 1rem; border: none; background: #00c4cc; color: white; border-radius: 5px; cursor: pointer; width: 100%; }
         form button:hover { background: #0099a6; }
         .messages { color: #fff; margin: 10px 0; }
@@ -37,11 +37,25 @@
         .messages .success { background: #00c4cc; }
         .messages .error { background: #ff4d4d; }
         canvas { border: 2px solid #00c4cc; background: #fff; border-radius: 5px; margin-bottom: 10px; }
-        .canvas-controls { margin-bottom: 10px; }
-        .canvas-controls button { padding: 5px 10px; background: #00c4cc; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 5px; }
-        .canvas-controls button:hover { background: #0099a6; }
+        .canvas-controls { margin-bottom: 10px; display: flex; gap: 10px; }
+        .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
+        .color-btn.black { background: black; }
+        .color-btn.red { background: red; }
+        .color-btn.blue { background: blue; }
         .select2-container { width: 100% !important; }
         .select2-selection { border: 2px solid #00c4cc !important; border-radius: 5px !important; background: #fff !important; }
+        .reports-btn { padding: 10px 20px; background: #00c4cc; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+        .reports-btn:hover { background: #0099a6; }
+        .lab-reports { display: none; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
+        .lab-reports.active { display: block; }
+        .lab-reports h2 { color: #fff; margin-bottom: 20px; }
+        .reports-container { display: flex; gap: 20px; }
+        .completed-reports, .pending-reports { flex: 1; }
+        .completed-reports h3, .pending-reports h3 { color: #fff; margin-bottom: 10px; }
+        .lab-reports ul { list-style: none; padding: 0; }
+        .lab-reports li { background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 10px; margin: 10px 0; color: #fff; }
+        .lab-reports a { color: #00c4cc; text-decoration: none; }
+        .lab-reports a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -72,33 +86,70 @@
                         {% if active_session and current_patient %}
                             <p>Patient: {{ current_patient.patient_name }} (Slot: {{ active_session.slot }})</p>
                             <div class="form-section">
-                                <!-- Prescription Form with Whiteboard -->
+                                <!-- Prescription and Lab Request Form -->
                                 <form method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <input type="hidden" name="patient_id" value="{{ current_patient.id }}">
-                                    <div class="canvas-controls">
-                                        <button type="button" onclick="clearCanvas()">Clear</button>
-                                        <button type="button" onclick="changeColor('black')">Black</button>
-                                        <button type="button" onclick="changeColor('red')">Red</button>
-                                        <button type="button" onclick="changeColor('blue')">Blue</button>
+                                    <div class="whiteboard-section">
+                                        <div class="canvas-controls">
+                                            <button type="button" onclick="clearCanvas()">Clear</button>
+                                            <button type="button" class="color-btn black" onclick="changeColor('black')"></button>
+                                            <button type="button" class="color-btn red" onclick="changeColor('red')"></button>
+                                            <button type="button" class="color-btn blue" onclick="changeColor('blue')"></button>
+                                        </div>
+                                        <canvas id="whiteboard" width="400" height="200"></canvas>
+                                        <input type="hidden" name="prescription_image" id="prescription_image">
                                     </div>
-                                    <canvas id="whiteboard" width="400" height="200"></canvas>
-                                    <input type="hidden" name="prescription_image" id="prescription_image">
-                                    <button type="submit" name="prescription" onclick="saveCanvas()">Save Prescription</button>
-                                </form>
-                                <!-- Lab Request Form with Searchable Dropdown -->
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="patient_id" value="{{ current_patient.id }}">
-                                    <select name="lab_requests[]" class="lab-test-select" multiple="multiple" required>
-                                        <!-- Options will be populated by Select2 -->
-                                    </select>
-                                    <button type="submit" name="lab_request">Request Lab Tests</button>
+                                    <div class="lab-test-section">
+                                        <select name="lab_requests[]" class="lab-test-select" multiple="multiple">
+                                            <!-- Options will be populated by Select2 -->
+                                        </select>
+                                    </div>
+                                    <button type="submit" name="save_all" onclick="saveCanvas()">Save All</button>
                                 </form>
                             </div>
                         {% else %}
                             <p>No active session or current patient at this time.</p>
                         {% endif %}
+                    </div>
+
+                    <!-- Patient Reports Section -->
+                    <button class="reports-btn" onclick="toggleReports()">Patient Reports</button>
+                    <div class="lab-reports" id="labReports">
+                        <h2>Requested Lab Reports</h2>
+                        <div class="reports-container">
+                            <div class="completed-reports">
+                                <h3>Completed Reports</h3>
+                                <ul>
+                                    {% for report in lab_reports %}
+                                        {% if report.status == 'Completed' %}
+                                            <li>
+                                                Patient: {{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }} - Status: {{ report.status }}
+                                                {% if report.report_data %}
+                                                    <a href="{{ report.report_data.url }}" target="_blank">View Report</a>
+                                                {% endif %}
+                                            </li>
+                                        {% endif %}
+                                    {% empty %}
+                                        <li>No completed lab reports.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="pending-reports">
+                                <h3>Pending Reports</h3>
+                                <ul>
+                                    {% for report in lab_reports %}
+                                        {% if report.status != 'Completed' %}
+                                            <li>
+                                                Patient: {{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }} - Status: {{ report.status }}
+                                            </li>
+                                        {% endif %}
+                                    {% empty %}
+                                        <li>No pending lab reports.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -176,7 +227,37 @@
         }
 
         function saveCanvas() {
-            const dataURL = canvas.toDataURL('image/png');
+            // Create a temporary canvas to add the header
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height + 60; // Add space for the header
+            const tempCtx = tempCanvas.getContext('2d');
+
+            // Fill the background with white
+            tempCtx.fillStyle = '#fff';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+            // Add the header text
+            tempCtx.fillStyle = '#000';
+            tempCtx.font = '16px Arial';
+            const currentTime = new Date().toLocaleString();
+            const doctorName = "{{ doctor_name }}"; // Doctor's name passed from the view
+            const headerText = `DigiTEL - ${currentTime} - Dr. ${doctorName}`;
+            tempCtx.fillText(headerText, 10, 20);
+
+            // Add a horizontal line
+            tempCtx.beginPath();
+            tempCtx.moveTo(10, 40);
+            tempCtx.lineTo(tempCanvas.width - 10, 40);
+            tempCtx.strokeStyle = '#000';
+            tempCtx.lineWidth = 1;
+            tempCtx.stroke();
+
+            // Copy the original canvas content to the temporary canvas (shifted down)
+            tempCtx.drawImage(canvas, 0, 60);
+
+            // Save the modified image
+            const dataURL = tempCanvas.toDataURL('image/png');
             document.getElementById('prescription_image').value = dataURL;
         }
 
@@ -185,7 +266,8 @@
             $('.lab-test-select').select2({
                 placeholder: 'Search for lab tests...',
                 allowClear: true,
-                tags: true,  // Allow adding new tags (tests)
+                tags: true,
+                multiple: true, // Ensure multiple selections are enabled
                 ajax: {
                     url: "{% url 'get_lab_tests' %}",
                     dataType: 'json',
@@ -217,6 +299,12 @@
                 }
             });
         });
+
+        // Toggle Lab Reports Section
+        function toggleReports() {
+            const reportsSection = document.getElementById('labReports');
+            reportsSection.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
