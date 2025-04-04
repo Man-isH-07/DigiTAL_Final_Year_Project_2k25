@@ -64,6 +64,8 @@
             <header>
                 <a class="logo" href="{% url 'doctor_dashboard' %}">Digi<span>TAL</span></a>
                 <div>
+                    <!-- Add this link in the template -->
+                    <span class="nav-links"><a href="{% url 'blockchain_dashboard' %}">View Blockchain Records</a></span>
                     <span class="nav-links"><a href="{% url 'medical_records_list' %}">View Medical Records</a></span>
                     <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
                 </div>

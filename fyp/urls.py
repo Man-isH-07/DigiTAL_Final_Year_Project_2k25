@@ -17,6 +17,7 @@ urlpatterns = [
     path('ai_assistant/', include('ai_assistant.urls')),
     path('lab_report/', include('lab_report.urls')),
     path('medical_records/', include('medical_records.urls')),
+    path('blockchain/', include('blockchain.urls')),
 ]
 
 # Serve media files during development

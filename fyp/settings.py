@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'ai_assistant',
     'lab_report',
     'medical_records',
+    'blockchain',
 ]
 
 MIDDLEWARE = [

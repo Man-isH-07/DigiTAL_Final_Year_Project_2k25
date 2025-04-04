@@ -329,6 +329,10 @@ def desk_dashboard(request):
         'doctors': doctors,
     })
 
+from blockchain.utils import add_record_to_blockchain
+from blockchain.models import BlockchainRecord
+import hashlib
+
 @role_required('doctor')
 @login_required
 def doctor_dashboard(request):
@@ -338,7 +342,7 @@ def doctor_dashboard(request):
     try:
         doctor = request.user.doctor_profile
     except Doctor.DoesNotExist:
-        return HttpResponseForbidden("No doctor profile found for this user. Please contact the admin to create a doctor profile.")
+        return HttpResponseForbidden("No doctor profile found for this user.")
 
     current_date = datetime.now().date()
     active_session = SessionHistory.objects.filter(
@@ -351,7 +355,6 @@ def doctor_dashboard(request):
     if active_session:
         current_patient = active_session.current_patient
 
-    # Get lab reports requested by this doctor
     medical_records = MedicalRecord.objects.filter(doctor=request.user, record_type='LabRequest')
     lab_reports = [record.lab_report for record in medical_records if record.lab_report]
 
@@ -362,7 +365,8 @@ def doctor_dashboard(request):
             lab_requests = request.POST.getlist('lab_requests[]')
             if patient_id:
                 appointment = get_object_or_404(Appointment, id=patient_id)
-                # Save Prescription
+                doctor_id = request.user.doctor_profile.id
+
                 if prescription_image_data:
                     format, imgstr = prescription_image_data.split(';base64,')
                     ext = format.split('/')[-1]
@@ -374,7 +378,21 @@ def doctor_dashboard(request):
                         data='',
                         prescription_image=image_file
                     )
-                    # Send email to patient with the prescription
+                    data_hash = hashlib.sha256(imgstr.encode()).hexdigest()
+                    record_id, tx_hash = add_record_to_blockchain(
+                        data_hash=data_hash,
+                        record_type='Prescription',
+                        patient_email=appointment.patient_email,
+                        doctor_id=doctor_id
+                    )
+                    BlockchainRecord.objects.create(
+                        record_id=record_id,
+                        transaction_hash=tx_hash,
+                        data_hash=data_hash,
+                        record_type='Prescription',
+                        patient_email=appointment.patient_email,
+                        doctor_id=doctor_id
+                    )
                     patient_email = appointment.patient_email
                     subject = 'Your Prescription from DigiTEL'
                     message = f'Dear {appointment.patient_name},\n\nPlease find your prescription attached.\n\nBest regards,\nDigiTEL Team'
@@ -386,32 +404,23 @@ def doctor_dashboard(request):
                     )
                     email.attach_file(medical_record.prescription_image.path)
                     email.send()
-                # Save Lab Request
+
                 if lab_requests:
                     for test_name in lab_requests:
                         if not LabTest.objects.filter(name=test_name).exists():
                             LabTest.objects.create(name=test_name)
-                    # Create or update Patient instance
                     try:
                         patient = Patient.objects.get(email=appointment.patient_email)
-                        # If the patient's name or phone doesn't match, update it
                         if patient.name != appointment.patient_name or patient.phone != appointment.patient_contact:
                             patient.name = appointment.patient_name
                             patient.phone = appointment.patient_contact
                             patient.save()
-                            print(f"Updated patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
                     except Patient.DoesNotExist:
-                        try:
-                            patient = Patient.objects.create(
-                                email=appointment.patient_email,
-                                name=appointment.patient_name,
-                                phone=appointment.patient_contact
-                            )
-                            print(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
-                        except Exception as e:
-                            messages.error(request, f"Failed to create patient: {e}")
-                            print(f"Error creating patient: {e}")
-                            return redirect('doctor_dashboard')
+                        patient = Patient.objects.create(
+                            email=appointment.patient_email,
+                            name=appointment.patient_name,
+                            phone=appointment.patient_contact
+                        )
                     lab_report = LabReport.objects.create(
                         patient=patient,
                         doctor=request.user,
@@ -425,11 +434,23 @@ def doctor_dashboard(request):
                         data=json.dumps(lab_requests),
                         lab_report=lab_report
                     )
-                # Do NOT change the appointment status to 'Completed'
-                # appointment.status = 'Completed'  # Removed this line
-                # appointment.save()  # No need to save since we're not changing the status
+                    data_hash = hashlib.sha256(json.dumps(lab_requests).encode()).hexdigest()
+                    record_id, tx_hash = add_record_to_blockchain(
+                        data_hash=data_hash,
+                        record_type='LabReport',
+                        patient_email=appointment.patient_email,
+                        doctor_id=doctor_id
+                    )
+                    BlockchainRecord.objects.create(
+                        record_id=record_id,
+                        transaction_hash=tx_hash,
+                        data_hash=data_hash,
+                        record_type='LabReport',
+                        patient_email=appointment.patient_email,
+                        doctor_id=doctor_id
+                    )
 
-                messages.success(request, "Prescription and lab requests saved successfully!")
+                messages.success(request, "Prescription and lab requests saved successfully! Data stored on blockchain.")
                 return redirect('doctor_dashboard')
         else:
             messages.error(request, "Invalid form submission.")
