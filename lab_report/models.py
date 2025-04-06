@@ -1,3 +1,4 @@
+# lab_report/models.py
 from django.db import models
 from django.conf import settings
 import json
@@ -30,18 +31,19 @@ class LabReport(models.Model):
     ]
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_reports',null=True)  # Add doctor field
-    tests = models.TextField()  # JSON string of test names
-    report_data = models.FileField(upload_to='lab_reports/', null=True, blank=True)  # For uploaded report file
+    doctor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lab_reports', null=True)
+    tests = models.TextField()
+    report_data = models.FileField(upload_to='lab_reports/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    blockchain_record_id = models.PositiveIntegerField(null=True, blank=True)
+    transaction_hash = models.CharField(max_length=66, null=True, blank=True)
 
     def __str__(self):
         return f"Lab Report for {self.patient.name} - {self.created_at}"
 
     def get_tests(self):
-        """Helper method to parse tests from the tests field."""
         if self.tests:
             return json.loads(self.tests)
         return []

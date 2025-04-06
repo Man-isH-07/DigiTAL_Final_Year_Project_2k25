@@ -10,6 +10,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+ganache-data/
 develop-eggs/
 dist/
 downloads/
@@ -170,3 +171,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Extras
+
+codes

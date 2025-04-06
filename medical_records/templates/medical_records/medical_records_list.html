@@ -1,3 +1,4 @@
+<!-- medical_records/templates/medical_records/medical_records_list.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,6 +41,7 @@
                 <a class="logo" href="{% url 'doctor_dashboard' %}">Digi<span>TAL</span></a>
                 <div>
                     <span class="nav-links"><a href="{% url 'doctor_dashboard' %}">Back to Dashboard</a></span>
+                    <span class="nav-links"><a href="{% url 'blockchain_dashboard' %}">View Blockchain Records</a></span>
                     <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
                 </div>
             </header>
@@ -59,6 +61,8 @@
                                                     <img src="{{ record.prescription_image.url }}" alt="Prescription Image" class="prescription-image">
                                                 </a></p>
                                             {% endif %}
+                                            <p>Blockchain Record ID: {{ record.blockchain_record_id|default:"N/A" }}</p>
+                                            <p>Transaction Hash: {{ record.transaction_hash|default:"N/A" }}</p>
                                         </li>
                                     {% endif %}
                                 {% empty %}
@@ -76,6 +80,12 @@
                                             {% if record.lab_report and record.lab_report.report_data %}
                                                 <p><a href="{{ record.lab_report.report_data.url }}" target="_blank">View Lab Report</a></p>
                                             {% endif %}
+                                            <p>Blockchain Record ID: {{ record.blockchain_record_id|default:"N/A" }}</p>
+                                            <p>Transaction Hash: {{ record.transaction_hash|default:"N/A" }}</p>
+                                            {% if record.lab_report %}
+                                                <p>Lab Report Blockchain Record ID: {{ record.lab_report.blockchain_record_id|default:"N/A" }}</p>
+                                                <p>Lab Report Transaction Hash: {{ record.lab_report.transaction_hash|default:"N/A" }}</p>
+                                            {% endif %}
                                         </li>
                                     {% endif %}
                                 {% empty %}
@@ -88,6 +98,5 @@
             </div>
         </div>
     </section>
-    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92990e713a276773',t:'MTc0MzUyMDY3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

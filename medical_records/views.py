@@ -1,10 +1,10 @@
+# medical_records/views.py
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from .models import MedicalRecord 
 from appointments.models import Appointment
 from doctors.models import Doctor
-
 
 def role_required(role):
     def decorator(view_func):
@@ -26,11 +26,9 @@ def medical_records_list(request):
     except Doctor.DoesNotExist:
         return HttpResponseForbidden("No doctor profile found for this user.")
 
-    # Get all appointments for this doctor
     appointments = Appointment.objects.filter(doctor=doctor)
     patient_names = appointments.values_list('patient_name', flat=True)
     
-    # Get medical records for patients the doctor has treated
     medical_records = MedicalRecord.objects.filter(patient_name__in=patient_names).order_by('-created_at')
 
     return render(request, 'medical_records/medical_records_list.html', {

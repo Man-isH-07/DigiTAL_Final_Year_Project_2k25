@@ -5,31 +5,26 @@ from django.http import HttpResponseForbidden
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm
-from django.http import HttpResponseForbidden
-from .models import CustomUser
 from django.contrib.auth.hashers import make_password
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from appointments.views import send_session_notification
-from django.contrib.auth import login, logout, authenticate
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth import get_user_model
-from .forms import CustomUserCreationForm
-from django.contrib.auth.hashers import make_password
 from django.shortcuts import get_object_or_404
-from django.contrib import messages
 from appointments.models import Appointment, SessionHistory
 from doctors.models import Doctor
 from datetime import datetime
-from medical_records.models import MedicalRecord
 from lab_report.models import LabTest, Patient, LabReport
 import base64
 from django.core.files.base import ContentFile
 import uuid
 import json
+from django.contrib import messages
+from django.utils import timezone
+from .models import CustomUser
+from appointments.models import Appointment
+from medical_records.models import MedicalRecord
+import hashlib
+from blockchain.utils import add_record_to_blockchain
+from blockchain.models import BlockchainRecord
 from django.core.mail import EmailMessage
 from django.conf import settings
 import logging
@@ -329,9 +324,37 @@ def desk_dashboard(request):
         'doctors': doctors,
     })
 
+
+from django.contrib.auth import login, logout, authenticate
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden, JsonResponse
+from django.contrib.auth import get_user_model
+from .forms import CustomUserCreationForm
+from django.contrib.auth.hashers import make_password
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from appointments.views import send_session_notification
+from appointments.models import Appointment, SessionHistory
+from doctors.models import Doctor
+from datetime import datetime
+from medical_records.models import MedicalRecord
+from lab_report.models import LabTest, Patient, LabReport
+import base64
+from django.core.files.base import ContentFile
+import uuid
+import json
+from django.core.mail import EmailMessage
+from django.conf import settings
+import logging
 from blockchain.utils import add_record_to_blockchain
 from blockchain.models import BlockchainRecord
 import hashlib
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 @role_required('doctor')
 @login_required
@@ -385,6 +408,9 @@ def doctor_dashboard(request):
                         patient_email=appointment.patient_email,
                         doctor_id=doctor_id
                     )
+                    medical_record.blockchain_record_id = record_id
+                    medical_record.transaction_hash = tx_hash
+                    medical_record.save()
                     BlockchainRecord.objects.create(
                         record_id=record_id,
                         transaction_hash=tx_hash,
@@ -427,7 +453,7 @@ def doctor_dashboard(request):
                         tests=json.dumps(lab_requests),
                         status='Pending'
                     )
-                    MedicalRecord.objects.create(
+                    medical_record = MedicalRecord.objects.create(
                         patient_name=appointment.patient_name,
                         doctor=request.user,
                         record_type='LabRequest',
@@ -437,15 +463,18 @@ def doctor_dashboard(request):
                     data_hash = hashlib.sha256(json.dumps(lab_requests).encode()).hexdigest()
                     record_id, tx_hash = add_record_to_blockchain(
                         data_hash=data_hash,
-                        record_type='LabReport',
+                        record_type='LabRequest',
                         patient_email=appointment.patient_email,
                         doctor_id=doctor_id
                     )
+                    medical_record.blockchain_record_id = record_id
+                    medical_record.transaction_hash = tx_hash
+                    medical_record.save()
                     BlockchainRecord.objects.create(
                         record_id=record_id,
                         transaction_hash=tx_hash,
                         data_hash=data_hash,
-                        record_type='LabReport',
+                        record_type='LabRequest',
                         patient_email=appointment.patient_email,
                         doctor_id=doctor_id
                     )
@@ -463,7 +492,6 @@ def doctor_dashboard(request):
         'current_patient': current_patient,
         'lab_reports': lab_reports
     })
-
 
 @login_required
 def secure_view(request):

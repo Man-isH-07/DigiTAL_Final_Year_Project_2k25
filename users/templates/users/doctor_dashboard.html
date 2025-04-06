@@ -1,3 +1,4 @@
+<!-- users/templates/users/doctor_dashboard.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -232,7 +233,7 @@
             // Create a temporary canvas to add the header
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = canvas.width;
-            tempCanvas.height = canvas.height + 60; // Add space for the header
+            tempCanvas.height = canvas.height + 60;
             const tempCtx = tempCanvas.getContext('2d');
 
             // Fill the background with white
@@ -243,7 +244,7 @@
             tempCtx.fillStyle = '#000';
             tempCtx.font = '16px Arial';
             const currentTime = new Date().toLocaleString();
-            const doctorName = "{{ doctor_name }}"; // Doctor's name passed from the view
+            const doctorName = "{{ doctor_name }}";
             const headerText = `DigiTEL - ${currentTime} - Dr. ${doctorName}`;
             tempCtx.fillText(headerText, 10, 20);
 
@@ -269,7 +270,7 @@
                 placeholder: 'Search for lab tests...',
                 allowClear: true,
                 tags: true,
-                multiple: true, // Ensure multiple selections are enabled
+                multiple: true,
                 ajax: {
                     url: "{% url 'get_lab_tests' %}",
                     dataType: 'json',
