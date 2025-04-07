@@ -5,7 +5,7 @@ from .utils import get_record_from_blockchain
 from datetime import datetime
 
 def blockchain_dashboard(request):
-    records = BlockchainRecord.objects.all().order_by('record_id')
+    records = BlockchainRecord.objects.all().order_by('-record_id')  # New to old
     blockchain_data = []
     for record in records:
         try:
@@ -16,7 +16,6 @@ def blockchain_dashboard(request):
                 'data_hash': bc_data['data_hash'],
                 'record_type': bc_data['record_type'],
                 'patient_email': bc_data['patient_email'],
-                'doctor_id': bc_data['doctor_id'],
                 'timestamp': record.timestamp.strftime('%B %d, %Y, %I:%M %p'),
             })
         except Exception as e:

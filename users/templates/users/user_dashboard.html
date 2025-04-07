@@ -63,7 +63,7 @@
             border-radius: 30px;
             border: 2px solid rgba(211, 211, 211, 0.2);
             backdrop-filter: blur(8px);
-            padding: 20px;
+            padding: 0px;
         }
 
         /* Header */
@@ -73,7 +73,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 5px 15px;
-            margin: 20px;
+            margin: 10px;
             z-index: 1;
         }
 
@@ -101,10 +101,10 @@
         }
 
         .logo {
-            font-size: 40px;
+            font-size: 30px;
             font-weight: bold;
             color: white;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 
         .logo span {
@@ -235,10 +235,19 @@
         }
 
         .title {
-            font-size: 2.5rem;
+            font-size: 40px;
             color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            margin-bottom: 30px;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+
+        .username_
+        {
+            background-color: black;
+            color: white;
+            padding: 5px 10px 5px 10px;
+            border-radius: 5px;
+            font-size: 30px;
         }
 
         /* Container for the animated boxes */
@@ -329,12 +338,12 @@
             border-radius: 30%;
         }
 
-        .lab_dash {
+        .patient-report {
             background: rgb(220, 255, 255);
             color: #fff;
         }
 
-        .lab_dash img {
+        .patient-report img {
             background-color: white;
             width: 10vw;
             height: 20vh;
@@ -821,7 +830,7 @@
             </header>
 
             <div class="user-page">
-                <h1 class="title">Welcome to DigiTAL</h1>
+                <h5 class="title">Welcome to <a class="logo" href="#hero">Digi<span>TAL</span></a> , <span class="username_">{{user.username}}</span></h5>
                 <div class="options-container">
                     <!-- Existing options -->
                     <a href="{% url 'manual_booking' %}">

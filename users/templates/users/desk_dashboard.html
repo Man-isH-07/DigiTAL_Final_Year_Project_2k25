@@ -21,7 +21,6 @@
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
-            padding: 10px;
         }
 
         .top-bar {
@@ -30,7 +29,7 @@
             padding: 5px;
             text-align: center;
             text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border-radius: 5px;
             width: 500px;
             margin-left: auto;
@@ -48,7 +47,7 @@
             border-radius: 30px;
             border: 2px solid rgba(211, 211, 211, 0.2);
             backdrop-filter: blur(10px);
-            padding: 30px;
+            padding: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             animation: fadeIn 1s ease-out;
         }
@@ -58,33 +57,52 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .header {
+        header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-bottom: 30px;
+            justify-content: space-between;
+            padding: 5px 15px;
+            margin: 10px;
+            z-index: 1;
+        }
+
+        .logoutBtn {
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: lightcoral;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            width: 5vw;
+        }
+
+        .logoutBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .logoutBtn a {
+            text-decoration: none;
+            color: white;
+            font-weight: bolder;
+            text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 
         .logo {
-            font-size: 2.5em;
+            text-decoration: none;
+            font-size: 30px;
             font-weight: bold;
             color: white;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 
-        .logout-btn {
-            padding: 10px 20px;
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1em;
-            transition: background-color 0.3s;
-        }
-
-        .logout-btn:hover {
-            background-color: #e65b5b;
+        .logo span {
+            color: rgb(0, 225, 225);
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 
         .main-content {
@@ -109,9 +127,17 @@
         }
 
         .section h3 {
-            color: #00e1e1;
+            background-color: rgba(0, 0, 0, 0.315);
+            width: 70%;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
             margin-bottom: 15px;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 
         .book-appointment input,
@@ -121,8 +147,9 @@
             margin-bottom: 10px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            background: rgba(255, 255, 255, 0.514);
+            color: black;
+            font-weight: bolder;
         }
 
         .book-appointment button {
@@ -133,11 +160,13 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-weight: bold;
         }
 
         .book-appointment button:hover {
-            background-color: #00cccc;
+            color: white;
+            background-color: rgb(43, 153, 0);
+            font-weight: bolder;
         }
 
         .virtual-waiting-room {
@@ -152,7 +181,8 @@
 
         .virtual-waiting-room p {
             color: white;
-            text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+            font-weight: bolder;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
             margin-bottom: 15px;
         }
 
@@ -167,10 +197,13 @@
             text-decoration: none;
             transition: background-color 0.3s;
             margin-bottom: 15px;
+            margin-top: 70px;
         }
 
         .virtual-waiting-room a:hover {
-            background-color: #00cccc;
+            background-color: white;
+            color: black;
+            font-weight: bolder;
         }
 
         .virtual-waiting-room img {
@@ -178,7 +211,6 @@
             max-width: 200px;
             height: auto;
             display: block;
-            margin: 0 auto;
         }
 
         .adjust-slot {
@@ -248,10 +280,10 @@
     <center>
     <div class="container">
         <!-- Header -->
-        <div class="header">
-            <div class="logo">DigiTAL</div>
-            <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
-        </div>
+        <header>
+            <a class="logo" href="#hero">Digi<span>TAL</span></a>
+            <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
+        </header>
 
         <!-- Display Messages -->
         {% if messages %}

@@ -15,8 +15,8 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: "Fredoka", sans-serif;
+                box-sizing: border-box;
+                font-family: "Fredoka", sans-serif;
         }
 
         body {
@@ -27,8 +27,10 @@
         .hero-section-container {
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 10px auto;
+            padding: 10px 20px 10px 20px; 
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
         }
 
         header {
@@ -36,6 +38,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 0;
+            margin-bottom: 10px;
         }
 
         .logo {
@@ -72,8 +75,8 @@
 
         .boxes-container {
             display: flex;
-            gap: 20px;
-            margin-bottom: 40px;
+            gap: 5px;
+            margin-bottom: 20px;
         }
 
         .box {
@@ -85,9 +88,22 @@
             padding: 20px;
         }
 
-        .box h2 {
-            color: #fff;
+        .pending-head {
+            color: black;
             margin-bottom: 20px;
+            background-color: rgba(255, 208, 0, 0.822);
+            padding: 5px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .collected-head {
+            color: black;
+            margin-bottom: 20px;
+            background-color: rgba(255, 166, 0, 0.767);
+            padding: 5px;
+            border-radius: 10px;
+            text-align: center;
         }
 
         ul {
@@ -96,7 +112,7 @@
         }
 
         ul li {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(8, 8, 8, 0.384);
             border: 2px solid #00c4cc;
             border-radius: 10px;
             padding: 10px;
@@ -137,13 +153,17 @@
             border-radius: 15px;
             padding: 20px;
             margin: 0 auto;
-            max-width: 800px;
+            max-width: 400px;
         }
 
-        .completed-container h2 {
+        .completed-container h3 {
             color: #fff;
             margin-bottom: 20px;
             text-align: center;
+            background-color: rgba(0, 179, 9, 0.719);
+            padding:5px;
+            border-radius: 10px;
+            
         }
 
         .file-upload {
@@ -160,11 +180,10 @@
             </header>
 
             <div class="user-page">
-                <h1 class="title">Lab Dashboard</h1>
                 <div class="boxes-container">
                     <!-- Pending Lab Reports -->
                     <div class="box">
-                        <h2>Pending Lab Requests</h2>
+                        <h3 class="pending-head">Pending Lab Requests</h3>
                         <ul>
                             {% for report in pending_reports %}
                                 <li data-report-id="{{ report.id }}">
@@ -178,7 +197,7 @@
                     </div>
                     <!-- Collected Lab Reports -->
                     <div class="box">
-                        <h2>Collected Lab Requests</h2>
+                        <h3 class="collected-head">Collected Lab Requests</h3>
                         <ul>
                             {% for report in collected_reports %}
                                 <li data-report-id="{{ report.id }}">
@@ -195,7 +214,7 @@
                     </div>
                     <!-- Completed Lab Reports -->
                     <div class="completed-container">
-                        <h2>Completed Lab Reports</h2>
+                        <h3>Completed Lab Reports</h3>
                         <ul>
                             {% for report in completed_reports %}
                                 <li>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }} - Completed on {{ report.updated_at }}</li>

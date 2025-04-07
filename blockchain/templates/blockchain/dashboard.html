@@ -1,56 +1,264 @@
-<!-- blockchain/templates/blockchain/dashboard.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'img/redketchup/android-chrome-512x512.png' %}" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Blockchain Dashboard</title>
     <style>
-        table {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #f9f9f9; /* Semi-white background */
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Fredoka", sans-serif; }
+        header { display: flex; justify-content: space-between; align-items: center; background-color: rgb(185, 185, 185); padding: 10px; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+        }
+        .logo { font-size: 2rem; font-weight: 700; color: #fff; text-decoration: none;text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;        }
+        .logo span { color: #00c4cc; margin-left: 2px; }
+        .nav-links a { color: #fff; text-decoration: none; font-size: 1rem; margin-left: 20px; background-color: rgb(0, 0, 0); padding: 5px; border: none; border-radius: 10px; }
+        .nav-links a:hover {  font-weight: bolder; }
+
+        h1 {
+            text-align: center;
+            font-family: 'Georgia', 'Times New Roman', serif; /* Premium font with fallbacks */
+            font-size: 2.0rem; /* Larger, standout size */
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background-color: rgb(231, 231, 231);
+            color: black; /* Dark brown for contrast */
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.1); /* Subtle shadow for depth */
+            animation: fadeIn 1s ease-in-out, glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #8b4513, 0 0 10px #8b4513; }
+            to { text-shadow: 0 0 10px #8b4513, 0 0 20px #8b4513; }
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .record-div {
+            position: relative;
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+            height: 150px;
+            background: #fffaf0; /* Light cream for records */
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+
+        .record-div:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            animation: wave 1s ease-in-out infinite alternate;
         }
-        th {
-            background-color: #f2f2f2;
+
+        @keyframes wave {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .record-content {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .record-content p {
+            font-size: 0.9rem;
+            color: #333;
+            line-height: 1.4;
+            word-break: break-all;
+        }
+
+        .record-content strong {
+            color: #8b4513;
+            font-weight: 600;
+        }
+
+        .record-icons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            height: 100%;
+        }
+
+        .record-icon {
+            width: 50px;
+            height: 50px;
+            background: #8b4513;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .record-div:hover .record-icon {
+            transform: rotate(360deg);
+        }
+
+        /* Background with High-Frequency Bubbles */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(139, 69, 19, 0.2); /* Dark brown with transparency */
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        /* Increased frequency with more bubbles */
+        .bubble:nth-child(1) { top: 5%; left: 5%; animation-delay: 0s; }
+        .bubble:nth-child(2) { top: 10%; left: 15%; animation-delay: 1s; }
+        .bubble:nth-child(3) { top: 15%; left: 25%; animation-delay: 2s; }
+        .bubble:nth-child(4) { top: 20%; left: 35%; animation-delay: 3s; }
+        .bubble:nth-child(5) { top: 25%; left: 45%; animation-delay: 4s; }
+        .bubble:nth-child(6) { top: 30%; left: 55%; animation-delay: 5s; }
+        .bubble:nth-child(7) { top: 35%; left: 65%; animation-delay: 6s; }
+        .bubble:nth-child(8) { top: 40%; left: 75%; animation-delay: 7s; }
+        .bubble:nth-child(9) { top: 45%; left: 85%; animation-delay: 8s; }
+        .bubble:nth-child(10) { top: 50%; left: 95%; animation-delay: 9s; }
+        .bubble:nth-child(11) { top: 55%; left: 10%; animation-delay: 10s; }
+        .bubble:nth-child(12) { top: 60%; left: 20%; animation-delay: 11s; }
+        .bubble:nth-child(13) { top: 65%; left: 30%; animation-delay: 12s; }
+        .bubble:nth-child(14) { top: 70%; left: 40%; animation-delay: 13s; }
+        .bubble:nth-child(15) { top: 75%; left: 50%; animation-delay: 14s; }
+        .bubble:nth-child(16) { top: 80%; left: 60%; animation-delay: 15s; }
+        .bubble:nth-child(17) { top: 85%; left: 70%; animation-delay: 16s; }
+        .bubble:nth-child(18) { top: 90%; left: 80%; animation-delay: 17s; }
+        .bubble:nth-child(19) { top: 95%; left: 90%; animation-delay: 18s; }
+        .bubble:nth-child(20) { top: 5%; left: 95%; animation-delay: 19s; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1); opacity: 0.5; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .record-div { height: 180px; flex-direction: column; align-items: flex-start; }
+            .record-icons { margin-top: 10px; }
+            .record-content p { font-size: 0.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .record-div { height: 200px; }
+            .record-content p { font-size: 0.7rem; }
+            .record-icon { width: 40px; height: 40px; font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-    <h1>Blockchain Records Dashboard</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Record ID</th>
-                <th>Transaction Hash</th>
-                <th>Data Hash</th>
-                <th>Record Type</th>
-                <th>Patient Email</th>
-                <th>Doctor ID</th>
-                <th>Timestamp</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="background-animation">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+    <div class="dashboard-container">
+        <header>
+            <a class="logo" href="{% url 'doctor_dashboard' %}">Digi<span>TAL</span></a>
+            <div>
+                <span class="nav-links"><a href="{% url 'doctor_dashboard' %}">Back to Doctor Dashboard</a></span>
+            </div>
+        </header>
+        <h1>Blockchain Dashboard</h1>
+        <div class="record-list">
             {% for record in records %}
-            <tr>
-                <td>{{ record.record_id }}</td>
-                <td>{{ record.transaction_hash }}</td>
-                <td>{{ record.data_hash }}</td>
-                <td>{{ record.record_type }}</td>
-                <td>{{ record.patient_email }}</td>
-                <td>{{ record.doctor_id }}</td>
-                <td>{{ record.timestamp }}</td>
-            </tr>
+                <div class="record-div">
+                    <div class="record-content">
+                        <p><strong>Record ID:</strong> {{ record.record_id }}</p>
+                        <p><strong>Transaction Hash:</strong> {{ record.transaction_hash }}</p>
+                        <p><strong>Data Hash:</strong> {{ record.data_hash }}</p>
+                        <p><strong>Record Type:</strong> {{ record.record_type }}</p>
+                        <p><strong>Patient Email:</strong> {{ record.patient_email }}</p>
+                        <p><strong>Timestamp:</strong> {{ record.timestamp }}</p>
+                    </div>
+                    <div class="record-icons">
+                        <div class="record-icon">📄</div>
+                        <div class="record-icon">🔗</div>
+                        <div class="record-icon">⏳</div>
+                    </div>
+                </div>
             {% empty %}
-            <tr>
-                <td colspan="7">No records found.</td>
-            </tr>
+                <p>No records found.</p>
             {% endfor %}
-        </tbody>
-    </table>
-    <a href="{% url 'doctor_dashboard' %}">Back to Doctor Dashboard</a>
+        </div>
+        
+    </div>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92c062157d35bf66',t:'MTc0MzkzMzA0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
