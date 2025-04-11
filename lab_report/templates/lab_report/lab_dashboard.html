@@ -38,7 +38,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 0;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .logo {
@@ -54,29 +54,24 @@
 
         .logoutBtn a {
             color: #fff;
+            background-color: red;
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1rem;
             padding: 10px 20px;
-            border: 2px solid #00c4cc;
             border-radius: 5px;
+            font-weight: bold;
             transition: background 0.3s ease;
         }
 
         .logoutBtn a:hover {
-            background: #00c4cc;
-        }
+            font-weight: bolder;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
 
-        .title {
-            font-size: 3rem;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 40px;
         }
 
         .boxes-container {
             display: flex;
             gap: 5px;
-            margin-bottom: 20px;
         }
 
         .box {
@@ -86,6 +81,8 @@
             backdrop-filter: blur(8px);
             border-radius: 15px;
             padding: 20px;
+            max-height: 80vh; 
+            overflow-y: auto; /* Scrollbar for overflow */
         }
 
         .pending-head {
@@ -113,7 +110,6 @@
 
         ul li {
             background: rgba(8, 8, 8, 0.384);
-            border: 2px solid #00c4cc;
             border-radius: 10px;
             padding: 10px;
             margin: 10px 0;
@@ -154,6 +150,8 @@
             padding: 20px;
             margin: 0 auto;
             max-width: 400px;
+            max-height: 80vh; 
+            overflow-y: auto; /* Scrollbar for overflow */
         }
 
         .completed-container h3 {
@@ -201,7 +199,7 @@
                         <ul>
                             {% for report in collected_reports %}
                                 <li data-report-id="{{ report.id }}">
-                                    <span>{{ report.patient.name }} - Tests: {{ report.get_tests|join:", " }}</span>
+                                    <span>{{ report.patient.name }} , Tests: {{ report.get_tests|join:", " }}</span>
                                     <div>
                                         <input type="file" class="file-upload" onchange="enableButton(this)">
                                         <button class="status-btn collected disabled" onclick="markCompleted(this)">Waiting</button>

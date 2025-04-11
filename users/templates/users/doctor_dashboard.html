@@ -17,25 +17,36 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Fredoka", sans-serif; }
         body { background: url("{% static 'img/backgrd.svg' %}") no-repeat center center fixed; background-size: cover; }
         .hero-section-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 5px; }
-        header { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 10px 15px 10px 15px; }
+        header { margin-bottom:6px; display: flex; justify-content: space-between; align-items: center;background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 10px 15px 10px 15px; }
         .logo { font-size: 2rem; font-weight: 700; color: #fff; text-decoration: none;text-shadow: -4px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
         .logo span { color: #00c4cc; }
-        .logoutBtn a { color: black; text-decoration: none; font-size: 1.2rem; padding: 5px; border: 2px solid #ff5555; border-radius: 5px; transition: background 0.3s ease; }
-        .logoutBtn a:hover { background: #ff5555; }
-        .nav-links a { color: #fff; text-decoration: none; font-size: 1.2rem; padding: 5px;margin-right: 10px; border: 2px solid #00c4cc; border-radius: 5px; transition: background 0.3s ease; font-weight: bold; }
-        .nav-links a:hover { background-color: #00c4cc; }
+        .logoutBtn a { color: white;  background: #ff5555; 
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+            font-weight: bolder;
+            font-size: large; text-decoration: none; font-size: 1.1rem; padding: 10px; border: 2px solid #ff5555; border-radius: 5px; transition: background 0.3s ease; }
+        .logoutBtn a:hover { text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
+        .nav-links a {  color: white;   background-color: #00c4cc;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+            font-weight: bolder;
+            font-size: large; text-decoration: none;  padding: 5px;margin-right: 10px; border: 3px solid #00c4cc; border-radius: 5px; transition: background 0.3s ease;}
+        .nav-links a:hover { text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;         }
         .title { font-size: 3rem; color: #fff; text-align: center; margin-bottom: 40px; }
-        .dashboard-container { background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 20px; }
-        .current-patient { margin-bottom: 20px; }
-        .current-patient h3, .current-patient p { color: #fff; }
+        .dashboard-container { display: flex; justify-content: center; align-items: center; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); border-radius: 15px; padding: 20px; }
+        .current-patient { margin-bottom: 20px; background-color: rgba(194, 227, 255, 0.815); border-radius: 10px; padding: 20px;}
+        .current-patient h3, .current-patient p { color: white; text-transform: uppercase;
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+            font-weight: bolder;
+            font-size: large; }
+        .current-patient h3 {background-color: rgba(0, 0, 0, 0.774); border-radius: 10px; padding: 5px 10px 5px 10px; margin-bottom: 10px; width: fit-content;}
         .form-section { display: flex; flex-direction: row; gap: 20px; align-items: flex-start; }
-        .whiteboard-section, .lab-test-section { flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
+        .atmain {display: flex; justify-content: center; gap: 20px;}
+        .whiteboard-section, .lab-test-section {  flex: 1; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
         .lab-test-section select { width: 100%; padding: 10px; font-size: 1rem; border: 2px solid #00c4cc; border-radius: 5px; background: #fff; margin-bottom: 10px; }
         form button { padding: 10px; font-size: 1rem; border: none; background: #00c4cc; color: white; border-radius: 5px; cursor: pointer; width: 100%; }
         form button:hover { background: #0099a6; }
-        .messages { color: #fff; margin: 10px 0; }
+        .messages { color: #fff; margin: 10px 0; font-weight: bolder; width: fit-content; padding: 10px;}
         .messages li { padding: 10px; border-radius: 5px; }
-        .messages .success { background: #00c4cc; }
+        .messages .success { background: #00960c; }
         .messages .error { background: #ff4d4d; }
         canvas { border: 2px solid #00c4cc; background: #fff; border-radius: 5px; margin-bottom: 10px; }
         .canvas-controls { margin-bottom: 10px; display: flex; gap: 10px; }
@@ -45,16 +56,21 @@
         .color-btn.blue { background: blue; }
         .select2-container { width: 100% !important; }
         .select2-selection { border: 2px solid #00c4cc !important; border-radius: 5px !important; background: #fff !important; }
-        .reports-btn { padding: 10px 20px; background: #00c4cc; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
-        .reports-btn:hover { background: #0099a6; }
-        .lab-reports { display: none; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
+        .reports-btn { color: white; 
+            text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+            font-weight: bolder;
+            font-size: large;  padding: 10px 20px; background: #00c4cc; border: none; border-radius: 5px; cursor: pointer;  }
+        .reports-btn:hover { background: #0098a69c; }
+        .lab-reports { font-size: medium; width: 80vw; margin-bottom: 10px; display: none; background: rgba(203, 208, 255, 0.918); border: 2px solid #00c4cc; border-radius: 10px; padding: 20px; }
         .lab-reports.active { display: block; }
-        .lab-reports h2 { color: #fff; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; font-weight: bolder; margin-bottom: 20px; }
+        .lab-reports h2 {background-color: rgba(0, 0, 0, 0.863); border-radius: 10px; 
+            padding: 5px; width: fit-content; color: #fff; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; font-weight: bolder; margin-bottom: 20px; }
         .reports-container { display: flex; gap: 20px; }
         .completed-reports, .pending-reports { flex: 1; }
-        .completed-reports h3, .pending-reports h3 { color: #fff; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; margin-bottom: 10px; }
+        .completed-reports h3, .pending-reports h3 { background-color: rgba(0, 0, 0, 0.658); border-radius: 10px; 
+                   padding: 5px; width: fit-content; color: #fff; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; margin-bottom: 10px; }
         .lab-reports ul { list-style: none; padding: 0; }
-        .lab-reports li { text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; background: rgba(255, 255, 255, 0.1); border: 2px solid #00c4cc; border-radius: 10px; padding: 10px; margin: 10px 0; color: #fff; font-weight: bolder;}
+        .lab-reports li { text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; background: rgba(185, 196, 255, 0.822); border: 2px solid #00c4cc; border-radius: 10px; padding: 10px; margin: 10px 0; color: #fff; font-weight: bolder;}
         .lab-reports a { color: black; text-shadow: -2px 0 white, 0 1px white, 1px 0 white, 0 -1px white; text-decoration: none; }
         .lab-reports a:hover { text-decoration: underline; }
     </style>
@@ -70,42 +86,47 @@
                     <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
                 </div>
             </header>
-            <div class="user-page">
-                <div class="dashboard-container">
-                    {% if messages %}
+
+            <center>
+                {% if messages %}
                         <ul class="messages">
                             {% for message in messages %}
                                 <li class="{{ message.tags }}">{{ message }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
+            </center>
+
+            <div class="user-page">
+                <div class="dashboard-container">
 
                     <!-- Current Patient -->
                     <div class="current-patient">
-                        <h3>Current Patient (Today: {{ current_date|date:"Y-m-d" }})</h3>
+                        <h3>Current Patient : {{ current_patient.patient_name }} (Slot: {{ active_session.slot }}) (Today: {{ current_date|date:"Y-m-d" }})</h3>
                         {% if active_session and current_patient %}
-                            <p>Patient: {{ current_patient.patient_name }} (Slot: {{ active_session.slot }})</p>
                             <div class="form-section">
                                 <!-- Prescription and Lab Request Form -->
                                 <form method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <input type="hidden" name="patient_id" value="{{ current_patient.id }}">
-                                    <div class="whiteboard-section">
-                                        <div class="canvas-controls">
-                                            <button type="button" onclick="clearCanvas()">Clear</button>
-                                            <button type="button" class="color-btn black" onclick="changeColor('black')"></button>
-                                            <button type="button" class="color-btn red" onclick="changeColor('red')"></button>
-                                            <button type="button" class="color-btn blue" onclick="changeColor('blue')"></button>
+                                    <div class="atmain">
+                                        <div class="whiteboard-section">
+                                            <div class="canvas-controls">
+                                                <button type="button" onclick="clearCanvas()">Clear</button>
+                                                <button type="button" class="color-btn black" onclick="changeColor('black')"></button>
+                                                <button type="button" class="color-btn red" onclick="changeColor('red')"></button>
+                                                <button type="button" class="color-btn blue" onclick="changeColor('blue')"></button>
+                                            </div>
+                                            <canvas id="whiteboard" width="400" height="200"></canvas>
+                                            <input type="hidden" name="prescription_image" id="prescription_image">
                                         </div>
-                                        <canvas id="whiteboard" width="400" height="200"></canvas>
-                                        <input type="hidden" name="prescription_image" id="prescription_image">
+                                        <div class="lab-test-section">
+                                            <select name="lab_requests[]" class="lab-test-select" multiple="multiple">
+                                                <!-- Options will be populated by Select2 -->
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="lab-test-section">
-                                        <select name="lab_requests[]" class="lab-test-select" multiple="multiple">
-                                            <!-- Options will be populated by Select2 -->
-                                        </select>
-                                    </div>
-                                    <button type="submit" name="save_all" onclick="saveCanvas()">Save All</button>
+                                    <button type="submit" name="save_all" onclick="saveCanvas()" style="margin-top: 10px;">Save All</button>
                                 </form>
                             </div>
                         {% else %}
@@ -113,48 +134,53 @@
                         {% endif %}
                     </div>
 
-                    <!-- Patient Reports Section -->
-                    <button class="reports-btn" onclick="toggleReports()">Patient Reports</button>
-                    <div class="lab-reports" id="labReports">
-                        <h2>Requested Lab Reports</h2>
-                        <div class="reports-container">
-                            <div class="completed-reports">
-                                <h3>Completed Reports</h3>
-                                <ul>
-                                    {% for report in lab_reports %}
-                                        {% if report.status == 'Completed' %}
-                                            <li>
-                                                Patient: {{ report.patient.name }} , Tests: {{ report.get_tests|join:", " }} , Status: {{ report.status }}
-                                                {% if report.report_data %}
-                                                    <a href="{{ report.report_data.url }}" target="_blank"> View Report</a>
-                                                {% endif %}
-                                            </li>
-                                        {% endif %}
-                                    {% empty %}
-                                        <li>No completed lab reports.</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="pending-reports">
-                                <h3>Pending Reports</h3>
-                                <ul>
-                                    {% for report in lab_reports %}
-                                        {% if report.status != 'Completed' %}
-                                            <li>
-                                                Patient: {{ report.patient.name }} , Tests: {{ report.get_tests|join:", " }} , Status: {{ report.status }}
-                                            </li>
-                                        {% endif %}
-                                    {% empty %}
-                                        <li>No pending lab reports.</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
     </section>
+
+    <center>
+    <!-- Patient Reports Section -->
+    <button class="reports-btn" onclick="toggleReports()">Patient Reports</button>
+    <div class="lab-reports" id="labReports">
+        <h2>Requested Lab Reports</h2>
+        <div class="reports-container">
+            <div class="completed-reports">
+                <h3>Completed Reports</h3>
+                <ul>
+                    {% for report in lab_reports %}
+                        {% if report.status == 'Completed' %}
+                            <li>
+                                Patient: {{ report.patient.name }} , Tests: {{ report.get_tests|join:", " }} , Status: {{ report.status }}
+                                {% if report.report_data %}
+                                    <a href="{{ report.report_data.url }}" target="_blank"> View Report</a>
+                                {% endif %}
+                            </li>
+                        {% endif %}
+                    {% empty %}
+                        <li>No completed lab reports.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="pending-reports">
+                <h3>Pending Reports</h3>
+                <ul>
+                    {% for report in lab_reports %}
+                        {% if report.status != 'Completed' %}
+                            <li>
+                                Patient: {{ report.patient.name }} , Tests: {{ report.get_tests|join:", " }} , Status: {{ report.status }}
+                            </li>
+                        {% endif %}
+                    {% empty %}
+                        <li>No pending lab reports.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</center>
 
     <!-- Add jQuery and Select2 JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

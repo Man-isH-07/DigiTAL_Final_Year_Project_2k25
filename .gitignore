@@ -173,5 +173,5 @@ cython_debug/
 .pypirc
 
 # Extras
-
+media
 codes

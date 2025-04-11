@@ -35,12 +35,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-y: auto; /* Allow body to scroll if content overflows */
         }
 
         #hero {
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 100%;
         }
 
         #hero::before {
@@ -55,14 +57,15 @@
         }
 
         .hero-section-container {
-            margin: 10px;
+            margin: 15px;
             background-color: rgba(255, 255, 255, 0.1);
             height: fit-content;
             width: 90vw;
             border-radius: 30px;
             border: 2px solid rgba(211, 211, 211, 0.2);
             backdrop-filter: blur(8px);
-            padding: 20px;
+            padding: 10px;
+            overflow: hidden; /* Prevent main container from scrolling */
         }
 
         /* Header */
@@ -72,7 +75,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 5px 15px;
-            margin: 20px;
+            margin: 5px;
             z-index: 1;
         }
 
@@ -149,17 +152,21 @@
             display: flex;
             justify-content: space-between;
             gap: 20px;
+            flex-wrap: wrap;
+            overflow: hidden; /* Prevent section from scrolling */
         }
 
         .reports-column {
             flex: 1;
-            max-height: 500px; /* Set a max height for scrolling */
-            overflow-y: auto; /* Enable vertical scrolling */
+            min-width: 300px;
+            max-height: 400px; /* Set a fixed max height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling within columns */
             padding: 10px;
+            border: 1px solid #ccc; /* Optional: Add border for visual separation */
         }
 
         .reports-column h2 {
-            margin: 0px 0px 20px 0px;
+            margin: 0 0 20px 0;
             color: #333;
         }
 
@@ -171,9 +178,10 @@
 
         .report-box {
             background: #fff;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .report-box:hover {
@@ -194,10 +202,30 @@
         .report-box a {
             color: #00c4cc;
             text-decoration: none;
+            padding: 5px 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
         }
 
         .report-box a:hover {
             text-decoration: underline;
+            background-color: #e0e0e0;
+        }
+
+        .no-data {
+            color: #888;
+            font-style: italic;
+        }
+
+        /* Debug Info */
+        .debug-info {
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #c0392b;
+            display: none; /* Hidden by default, enable if needed */
         }
 
         /* Footer Section */
@@ -217,70 +245,77 @@
         <div class="hero-section-container">
             <header>
                 <a class="logo" href="{% url 'user_dashboard' %}">Digi<span>TAL</span></a>
+                <a href="{% url 'user_dashboard' %}" class="back-btn">Back to Dashboard</a>
                 <span class="logoutBtn"><a href="{% url 'logout' %}">Logout</a></span>
             </header>
 
             <div class="user-page">
-                <h1 class="title">Your Lab Reports and Prescriptions</h1>
-
-                <!-- Back to Dashboard Button -->
-                <a href="{% url 'user_dashboard' %}" class="back-btn">Back to Dashboard</a>
 
                 <!-- Reports and Prescriptions Section -->
                 <section class="reports-section">
                     <!-- Prescriptions (Left) -->
                     <div class="reports-column">
-                        <h2>Prescriptions</h2>
+                        <h2>Prescriptions (Booked by You)</h2>
                         <div class="reports-container">
-                            {% for prescription in prescriptions %}
+                            {% if prescriptions %}
+                                {% for prescription in prescriptions %}
+                                    <div class="report-box">
+                                        <h4>Prescription for {{ prescription.patient_name|default:"Unknown Patient" }} (Booked by you)</h4>
+                                        <p>Issued by: Dr. {{ prescription.doctor.username|default:"Unknown Doctor" }}</p>
+                                        <p>Issued on: {{ prescription.created_at|date:"F d, Y H:i"|default:"N/A" }}</p>
+                                        {% if prescription.prescription_image %}
+                                            <a href="{{ prescription.prescription_image.url }}" target="_blank" download>
+                                                <i class="fas fa-download"></i> View/Download Prescription
+                                            </a>
+                                        {% else %}
+                                            <p class="no-data">No prescription image available</p>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
                                 <div class="report-box">
-                                    <h3>Prescription for {{ prescription.patient_name }}</h3>
-                                    <p>Issued by: Dr. {{ prescription.doctor.username }}</p>
-                                    <p>Issued on: {{ prescription.created_at }}</p>
-                                    {% if prescription.prescription_image %}
-                                        <a href="{{ prescription.prescription_image.url }}" target="_blank">View Prescription</a>
-                                    {% else %}
-                                        <p>No prescription image available</p>
-                                    {% endif %}
+                                    <p class="no-data">No prescriptions available for your bookings.</p>
                                 </div>
-                            {% empty %}
-                                <div class="report-box">
-                                    <p>No prescriptions available.</p>
-                                </div>
-                            {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
 
                     <!-- Lab Reports (Right) -->
                     <div class="reports-column">
-                        <h2>Lab Reports</h2>
+                        <h2>Lab Reports (Booked by You)</h2>
                         <div class="reports-container">
-                            {% for report in lab_reports %}
+                            {% if lab_reports %}
+                                {% for report in lab_reports %}
+                                    <div class="report-box">
+                                        <h4>Lab Report for {{ report.patient.name|default:"Unknown Patient" }} (Booked by you)</h4>
+                                        <p>Tests: {{ report.get_tests|join:", "|default:"N/A" }}</p>
+                                        <p>Completed on: {{ report.updated_at|date:"F d, Y H:i"|default:"N/A" }}</p>
+                                        {% if report.report_data %}
+                                            <a href="{{ report.report_data.url }}" target="_blank" download>
+                                                <i class="fas fa-download"></i> View/Download Report
+                                            </a>
+                                        {% else %}
+                                            <p class="no-data">No report file available</p>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
                                 <div class="report-box">
-                                    <h3>Lab Report for {{ report.patient.name }}</h3>
-                                    <p>Tests: {{ report.get_tests|join:", " }}</p>
-                                    <p>Completed on: {{ report.updated_at }}</p>
-                                    {% if report.report_data %}
-                                        <a href="{{ report.report_data.url }}" target="_blank">View Report</a>
-                                    {% else %}
-                                        <p>No report file available</p>
-                                    {% endif %}
+                                    <p class="no-data">No lab reports available for your bookings.</p>
                                 </div>
-                            {% empty %}
-                                <div class="report-box">
-                                    <p>No lab reports available.</p>
-                                </div>
-                            {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </section>
 
-                <!-- Footer Section -->
-                <footer class="footer-section">
-                    <p>© 2024 DigiTAL. All Rights Reserved.</p>
-                </footer>
+                <!-- Debug Info (Enable if needed) -->
+                <div class="debug-info">
+                    <p>Debug: Appointments count = {{ appointments|length }}, Lab Reports count = {{ lab_reports|length }}, Prescriptions count = {{ prescriptions|length }}</p>
+                    <p>Debug: First appointment patient = {{ appointments.0.patient_name|default:"N/A" }}, First lab report patient = {{ lab_reports.0.patient.name|default:"N/A" }}, First prescription patient = {{ prescriptions.0.patient_name|default:"N/A" }}</p>
+                </div>
             </div>
         </div>
     </section>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92e29b78cb3abd44',t:'MTc0NDI5MTkxNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

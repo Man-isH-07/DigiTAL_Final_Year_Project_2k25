@@ -24,7 +24,7 @@ def role_required(role):
 def lab_dashboard(request):
     pending_reports = LabReport.objects.filter(status='Pending')
     collected_reports = LabReport.objects.filter(status='Collected')
-    completed_reports = LabReport.objects.filter(status='Completed')
+    completed_reports = LabReport.objects.filter(status='Completed').order_by('-created_at')
 
     if request.method == 'POST':
         report_id = request.POST.get('report_id')

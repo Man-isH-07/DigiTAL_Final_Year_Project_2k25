@@ -195,53 +195,38 @@ def user_reports_and_prescriptions(request):
     if request.user.role != 'user':
         return HttpResponseForbidden("Only users can access this page.")
 
-    # Get the user's appointments (only completed ones)
-    appointments = Appointment.objects.filter(
-        patient_email=request.user.email,
-        status='Completed'
-    )
+    # Get all appointments booked by the logged-in user
+    appointments = Appointment.objects.filter(user=request.user)
 
-    # Get lab reports associated with these appointments
-    lab_reports = []
-    for appointment in appointments:
-        try:
-            patient = Patient.objects.get(email=appointment.patient_email)
-        except Patient.DoesNotExist:
-            # Create the Patient if it doesn't exist
-            try:
-                patient = Patient.objects.create(
-                    email=appointment.patient_email,
-                    name=appointment.patient_name,
-                    phone=appointment.patient_contact
-                )
-                logger.info(f"Created patient: {patient.id}, {patient.name}, {patient.email}, {patient.phone}")
-            except Exception as e:
-                logger.error(f"Error creating patient: {e}")
-                continue
-        # Get lab reports for this patient with status 'Completed'
-        reports = LabReport.objects.filter(patient=patient, status='Completed')
-        lab_reports.extend(reports)
-
-    # Get prescriptions associated with these appointments
+    # Fetch prescriptions associated with appointments booked by this user
     prescriptions = []
     for appointment in appointments:
-        # Find medical records of type 'Prescription' for this appointment
         medical_records = MedicalRecord.objects.filter(
             patient_name=appointment.patient_name,
-            record_type='Prescription',
-            doctor=appointment.doctor.user  # Ensure the doctor matches
-        )
+            doctor=appointment.doctor.user,
+            record_type='Prescription'
+        ).order_by('-created_at')
         prescriptions.extend(medical_records)
 
-    # Sort lab reports by updated_at (newest to oldest)
-    lab_reports.sort(key=lambda x: x.updated_at, reverse=True)
+    # Remove duplicates based on id and sort by creation date
+    prescriptions = sorted(list({p.id: p for p in prescriptions}.values()), key=lambda x: x.created_at, reverse=True)
+    logger.info(f"Found {len(prescriptions)} prescriptions for appointments booked by {request.user.email}")
 
-    # Sort prescriptions by created_at (newest to oldest)
-    prescriptions.sort(key=lambda x: x.created_at, reverse=True)
+    # Fetch lab reports associated with appointments booked by this user
+    lab_report_ids = MedicalRecord.objects.filter(
+        patient_name__in=appointments.values_list('patient_name', flat=True),
+        doctor__in=appointments.values_list('doctor__user', flat=True),
+        record_type='LabRequest'
+    ).values_list('lab_report_id', flat=True)
+    lab_reports = LabReport.objects.filter(
+        id__in=lab_report_ids
+    ).order_by('-updated_at')
+    logger.info(f"Found {len(lab_reports)} lab reports for appointments booked by {request.user.email}")
 
     return render(request, 'users/user_reports_and_prescriptions.html', {
         'lab_reports': lab_reports,
-        'prescriptions': prescriptions
+        'prescriptions': prescriptions,
+        'appointments': appointments
     })
 
 @login_required
