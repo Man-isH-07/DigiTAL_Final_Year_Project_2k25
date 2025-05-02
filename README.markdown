@@ -1,4 +1,4 @@
-# Final Year Project ( 2024 - 2025)
+# Final Year Project ( 2024 - 2025 )
 # DigiTAL: Enhancing Hospital Efficiency with AI-Driven Automation and Blockchain-Backed Data Management
 
 ![DigiTAL Logo](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/logo.png)  
@@ -142,6 +142,13 @@ Follow these steps to set up DigiTAL locally:
 - **Admins**: Oversee staff, patient records, and system operations via the Desk module.
 
 ---
+## Thesis
+The project's complete thesis is available on GitHub: 
+- [Thesis - Cover Page](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/cover_page_final.pdf)
+
+- [Thesis - Report](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/1_report.pdf)  
+
+- [Thesis - Research/Review Paper](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/2_published_research_paper.pdf)
 
 ## PPT Presentation
 The project's PowerPoint presentation is available on GitHub: 
