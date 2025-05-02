@@ -1,7 +1,7 @@
 # Final Year Project ( 2024 - 2025 )
 # DigiTAL: Enhancing Hospital Efficiency with AI-Driven Automation and Blockchain-Backed Data Management
 
-![DigiTAL Logo](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/logo.png)  
+![DigiTAL Logo](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/DigiTAL_logo.png)  
 *Revolutionizing Healthcare with AI and Blockchain*
 
 Welcome to **DigiTAL**, a cutting-edge Digital Hospital Management System (HMS) designed to enhance hospital efficiency, patient care, and data security. Developed as a Bachelor of Engineering project at Sipna College of Engineering and Technology, Amravati, this system integrates **Artificial Intelligence (AI)** and **Blockchain Technology** to address challenges like long waiting times, insecure data management, and inefficient workflows.  
