@@ -39,38 +39,33 @@ class Appointment(models.Model):
     def calculate_wait_time(self, session_start_time=None):
         """Calculate wait time in minutes based on queue position and session start time."""
         base_time = 20  # Default 20-minute treatment time
-        
-        if session_start_time:
-            from datetime import datetime, timedelta
-            current_time = datetime.now()
-            session_duration = (current_time - session_start_time).total_seconds() / 60  # Minutes
-            base_wait = max(0, (self.queue_position - 1) * base_time - session_duration)
-            return int(base_wait)
         return (self.queue_position - 1) * base_time
 
     def calculate_live_wait_time(self, session_data=None):
         """Calculate live wait time in minutes based on session data and queue position."""
         if self.status != 'Pending':
             return 0  # No wait time if not pending
-        if not session_data or 'doctor_id' not in session_data or 'date' not in session_data or 'slot' not in session_data:
+        if not session_data or 'doctor_id' not in session_data or 'date' not in session_data or 'slot' not in session_data or 'patient_timer' not in session_data:
             return self.calculate_wait_time()  # Fall back to static calculation if no session data
         doctor_id = session_data['doctor_id']
         date = datetime.strptime(session_data['date'], '%Y-%m-%d').date()
         slot = session_data['slot']
+        patient_timer = session_data['patient_timer']  # Remaining time in seconds
         doctor = Doctor.objects.get(id=doctor_id)
         if self.doctor != doctor or self.date != date or not self.time.strftime("%H:%M").startswith(slot):
             return self.calculate_wait_time()  # Fall back if appointment doesn’t match session
         appointments = Appointment.objects.filter(
             doctor=doctor, date=date, time__startswith=slot, status='Pending'
         ).order_by('queue_position')
-        current_patient_timer = session_data.get('patient_timer', 1200)  # Default to 20 mins (in seconds)
-        for appt in appointments:
-            if appt.id == self.id:
-                base_time = 20 * 60  # Default 20-minute treatment time in seconds
-                if appt.queue_position == 1:  # Current patient
-                    return max(0, current_patient_timer / 60)  # In minutes
-                else:
-                    return max(0, (appt.queue_position - 1) * base_time - (1200 - current_patient_timer)) / 60  # In minutes
+        current_patient_id = session_data.get('current_patient_id', None)
+        current_pos = next((i for i, appt in enumerate(appointments) if appt.id == current_patient_id), 0)
+        my_pos = next((i for i, appt in enumerate(appointments) if appt.id == self.id), None)
+        if my_pos is not None:
+            if current_patient_id and self.id == current_patient_id:
+                return max(0, patient_timer / 60)  # Current patient's remaining time in minutes
+            base_wait_minutes = (my_pos - current_pos) * 20  # Base wait time based on position
+            elapsed_minutes = max(0, (1200 - patient_timer) / 60)  # Elapsed time in minutes
+            return max(0, base_wait_minutes - elapsed_minutes)  # Adjust wait time by elapsed time
         return self.calculate_wait_time()  # Fallback if not found
 
     def can_be_updated(self):

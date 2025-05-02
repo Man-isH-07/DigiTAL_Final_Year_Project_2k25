@@ -11,7 +11,7 @@
         body { background-image: url('{% static "img/backgrd.svg" %}'); background-size: cover; background-position: center; min-height: 100vh; }
         .top-bar { display: flex; justify-content: center; align-items: center; background-color: rgba(0, 0, 0, 0.5); color: white; padding: 5px 0px 10px 0px; text-align: center; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
         .container { background-color: rgba(212, 212, 212, 0.411); border-radius: 30px; border: 2px solid rgba(211, 211, 211, 0.2); backdrop-filter: blur(8px); padding: 10px; width: 95vw; margin: 10px auto; }
-        .header-row {  display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .header-row h2 { color: white; text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
         
         .logo {
@@ -45,7 +45,6 @@
         }
 
         .logoutBtn {
-            
             background-color: lightcoral;
             color: white;
             padding: 5px;
@@ -62,36 +61,35 @@
             text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
 
-
-        #queueFilterForm { width: fit-content; border-radius: 10px;  padding: 10px; margin-bottom: 10px; border-radius: 5px;  }
+        #queueFilterForm { width: fit-content; border-radius: 10px; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
         .slot-btn { padding: 8px 16px; background-color: rgb(0, 225, 225); color: black; border: none; border-radius: 5px; cursor: pointer; text-decoration: none; }
         .slot-btn:hover { opacity: 0.8; }
         .form-row { display: flex; gap: 10px; align-items: center; }
-        .form-row label { font-weight: bold;  color: white;  text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
-        .form-row select, .form-row input {margin-right: 50px; padding: 8px; border-radius: 5px; border: 1px solid #ddd; flex: 1; max-width: 200px; }
+        .form-row label { font-weight: bold; color: white; text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
+        .form-row select, .form-row input { margin-right: 50px; padding: 8px; border-radius: 5px; border: 1px solid #ddd; flex: 1; max-width: 200px; }
         .queue-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 10px;
-                        overflow: hidden;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);color: white; 
-                        text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
-                        font-weight: bolder; }
+                       overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); color: white;
+                       text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+                       font-weight: bolder; }
         .queue-table th, .queue-table td { padding: 10px; text-align: left; color: white; text-shadow: -3px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
         .queue-table th { background-color: rgba(0, 255, 255, 0.466); }
         .queue-table td { background-color: rgba(187, 187, 187, 0.438); }
         .action-btn { padding: 5px 10px; margin-right: 5px; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; }
-        #patientActionsForm { background-color: #00000033;  padding: 10px; border-radius: 10px;
-                              font-weight: bold; font-size: medium; }
+        #patientActionsForm { background-color: #00000033; padding: 10px; border-radius: 10px;
+                             font-weight: bold; font-size: medium; }
         .treated-btn { background-color: #28a745; color: white; font-weight: bold; font-size: medium; }
         .skip-btn { background-color: #dc3545; color: white; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; font-weight: bold; font-size: medium; }
         .add-time-btn { background-color: #007bff; color: white; font-weight: bold; font-size: medium; }
         .action-btn:hover { opacity: 0.8; }
         .session-controls { display: flex; justify-content: center; align-items: center;
-                            justify-content: space-evenly;
-                            background-color: #00000033; border-radius: 10px; padding: 10px; }
-        .current-patient { width: fit-content;  padding: 15px;border-radius: 10px; background-color: rgba(255, 255, 255, 0.3); }
+                           justify-content: space-evenly;
+                           background-color: #00000033; border-radius: 10px; padding: 10px; }
+        .current-patient { width: fit-content; padding: 15px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.3); }
         .patient-timer { font-size: 1.5em; color: white; border: none; border-radius: 20px; background-color: black; padding: 2px 10px 2px 10px; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black; margin-left: 10px; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         .patient-timer.pulse { animation: pulse 1.5s infinite; }
         .filter-btn { background-color: rgb(0, 225, 225); font-weight: bold; color: white; text-shadow: -2px 0 black, 0 1px black, 1px 0 black, 0 -1px black;}
-        button { padding: 8px 16px;margin-bottom: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        button { padding: 8px 16px; margin-bottom: 5px; border: none; border-radius: 5px; cursor: pointer; }
         .start-btn { background-color: #006317; color: white; font-weight: bolder; }
         button:hover { opacity: 0.8; }
         .end-btn { background-color: #df0016; color: white; font-weight: bolder; }
@@ -128,7 +126,7 @@
         <div class="session-controls">
             {% if current_patient %}
                 <div class="current-patient">
-                    <span style="font-size: 1.2em; font-weight: bold; border: none; border-radius: 20px; background-color: white; padding: 2px 10px 2px 10px; ">Current Patient: {{ current_patient.patient_name }}</span>
+                    <span style="font-size: 1.2em; font-weight: bold; border: none; border-radius: 20px; background-color: white; padding: 2px 10px 2px 10px;" id="currentPatientName">Current Patient: {{ current_patient.patient_name }}</span>
                     <span class="patient-timer pulse" id="patientTimer">00:00</span>
                 </div>
                 <form method="post" id="patientActionsForm">
@@ -156,7 +154,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="queueTableBody">
                     {% for appointment in appointments %}
                         <tr data-id="{{ appointment.id }}">
                             <td>{{ appointment.queue_position }}</td>
@@ -165,7 +163,9 @@
                             <td id="wait-time-{{ appointment.id }}">0</td>
                             <td id="status-{{ appointment.id }}">{{ appointment.status }}</td>
                             <td>
-                                <button class="action-btn skip-btn" data-id="{{ appointment.id }}" data-action="skip">Skip</button>
+                                {% if appointment.id != current_patient.id %}
+                                    <button class="action-btn skip-btn" data-id="{{ appointment.id }}" data-action="skip">Skip</button>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
@@ -181,206 +181,250 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#id_doctor').change(function() {
-                var doctorId = $(this).val();
-                if (doctorId) {
-                    $.get('{% url "get_doctor_slots" 0 %}'.replace('0', doctorId), function(data) {
-                        var slotSelect = $('#id_slot');
-                        slotSelect.empty();
-                        slotSelect.append('<option value="">Select a Time Slot</option>');
-                        if (data.slots && Array.isArray(data.slots)) {
-                            data.slots.forEach(function(slot) {
-                                slotSelect.append('<option value="' + slot + '">' + slot + '</option>');
-                            });
-                        }
-                    });
-                }
-            });
-    
-            function updateTopBar() {
-                var today = new Date();
-                $('#todayDate').text(today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
-                $('#liveTime').text(today.toLocaleTimeString());
-                setTimeout(updateTopBar, 1000);
+<script>
+    $(document).ready(function() {
+        $('#id_doctor').change(function() {
+            var doctorId = $(this).val();
+            if (doctorId) {
+                $.get('{% url "get_doctor_slots" 0 %}'.replace('0', doctorId), function(data) {
+                    var slotSelect = $('#id_slot');
+                    slotSelect.empty();
+                    slotSelect.append('<option value="">Select a Time Slot</option>');
+                    if (data.slots && Array.isArray(data.slots)) {
+                        data.slots.forEach(function(slot) {
+                            slotSelect.append('<option value="' + slot + '">' + slot + '</option>');
+                        });
+                    }
+                });
             }
-            updateTopBar();
-    
-            let timerInterval = null;
-            let remainingSeconds = 1200; // Default to 20 minutes
-            let isAddingTime = false;
-            let currentPatientId = '{{ current_patient.id|default:"" }}';
-    
-            function updatePatientTimer(seconds) {
-                if (timerInterval) {
+        });
+
+        function updateTopBar() {
+            var today = new Date();
+            $('#todayDate').text(today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+            $('#liveTime').text(today.toLocaleTimeString());
+            setTimeout(updateTopBar, 1000);
+        }
+        updateTopBar();
+
+        let timerInterval = null;
+        let remainingSeconds = 1200; // Default to 20 minutes
+        let isAddingTime = false;
+        let currentPatientId = '{{ current_patient.id|default:"" }}';
+
+        function updatePatientTimer(seconds) {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            remainingSeconds = seconds;
+
+            function update() {
+                if (remainingSeconds > 0) {
+                    let minutes = Math.floor(remainingSeconds / 60);
+                    let secs = remainingSeconds % 60;
+                    $('#patientTimer').text(`${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`);
+                    remainingSeconds--;
+                    $.post("{% url 'save_patient_timer' %}", {
+                        remaining_time: remainingSeconds,
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }, function(response) {
+                        if (!response.success) {
+                            console.error('Failed to save timer:', response.error);
+                        }
+                    }).fail(function(xhr, status, error) {
+                        console.error('AJAX error saving timer:', error);
+                    });
+                    fetchWaitingTimes();
+                } else {
+                    $('#patientTimer').text('00:00');
                     clearInterval(timerInterval);
                 }
-                remainingSeconds = seconds;
-    
-                function update() {
-                    if (remainingSeconds > 0) {
-                        let minutes = Math.floor(remainingSeconds / 60);
-                        let secs = remainingSeconds % 60;
-                        $('#patientTimer').text(`${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`);
-                        remainingSeconds--;
-                        $.post("{% url 'save_patient_timer' %}", {
-                            remaining_time: remainingSeconds,
-                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-                        }, function(response) {
-                            if (!response.success) {
-                                console.error('Failed to save timer:', response.error);
-                            }
-                        }).fail(function(xhr, status, error) {
-                            console.error('AJAX error saving timer:', error);
-                        });
-                        fetchWaitingTimes();
-                    } else {
-                        $('#patientTimer').text('00:00');
-                        clearInterval(timerInterval);
-                    }
-                }
-    
-                update();
-                timerInterval = setInterval(update, 1000);
             }
-    
-            function initializeTimer() {
-                $.get("{% url 'fetch_patient_timer' %}", function(data) {
-                    if (data.success) {
-                        updatePatientTimer(data.current_patient_timer);
-                    } else {
-                        console.error('Failed to fetch timer:', data.error);
-                        updatePatientTimer(1200);
-                    }
-                }).fail(function(xhr, status, error) {
-                    console.error('AJAX error fetching timer:', error);
+
+            update();
+            timerInterval = setInterval(update, 1000);
+        }
+
+        function initializeTimer() {
+            $.get("{% url 'fetch_patient_timer' %}", function(data) {
+                if (data.success) {
+                    updatePatientTimer(data.current_patient_timer);
+                } else {
+                    console.error('Failed to fetch timer:', data.error);
                     updatePatientTimer(1200);
-                });
-            }
-    
-            var sessionStarted = '{{ session_started|lower }}' === 'true';
-            var currentPatientExists = '{{ current_patient|default:"" }}' !== '';
-    
-            if (sessionStarted && currentPatientExists) {
-                initializeTimer();
-            }
-    
-            function fetchWaitingTimes() {
-                $.get("{% url 'fetch_wait_times' %}?format=minutes", function(data) {
-                    data.wait_times.forEach(function(entry) {
-                        $("#wait-time-" + entry.id).text(entry.wait_time + " min");
-                        $("#status-" + entry.id).text(entry.status);
-                    });
-                }).fail(function(xhr, status, error) {
-                    console.error('AJAX error fetching wait times:', error);
-                });
-            }
-            setInterval(fetchWaitingTimes, 1000);
-    
-            // Periodically check the session status to update the current patient
-            function checkSessionStatus() {
-                $.get("{% url 'fetch_session_status' %}", function(data) {
-                    if (data.success) {
-                        if (!data.is_active) {
-                            // Session has ended, reload the page to reflect the change
-                            location.reload();
-                        } else {
-                            var newPatientId = data.current_patient_id || '';
-                            if (newPatientId !== currentPatientId) {
-                                // Current patient has changed, reload the page to update the UI
-                                location.reload();
-                            }
-                        }
-                    } else {
-                        console.error('Failed to fetch session status:', data.error);
-                    }
-                }).fail(function(xhr, status, error) {
-                    console.error('AJAX error fetching session status:', error);
-                });
-            }
-            setInterval(checkSessionStatus, 5000); // Check every 5 seconds
-    
-            $('.action-btn').click(function(e) {
-                e.preventDefault();
-                var appointmentId = $(this).data('id');
-                var action = $(this).data('action');
-    
-                if (action === 'add_time' && isAddingTime) {
-                    return;
                 }
-    
-                $.ajax({
-                    url: '{% url "update_queue_status" %}',
-                    method: 'POST',
-                    data: {
-                        appointment_id: appointmentId,
-                        action: action,
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-                    },
-                    beforeSend: function() {
-                        if (action === 'add_time') {
-                            isAddingTime = true;
-                        }
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            if (action === 'add_time') {
-                                $.get("{% url 'fetch_patient_timer' %}", function(data) {
-                                    if (data.success) {
-                                        let newTimer = data.current_patient_timer;
-                                        updatePatientTimer(newTimer);
-                                        fetchWaitingTimes();
-                                        console.log('Wait times updated after +5 mins');
-                                    } else {
-                                        console.error('Failed to fetch timer:', data.error);
-                                        updatePatientTimer(1200);
-                                    }
-                                }).fail(function(xhr, status, error) {
-                                    console.error('AJAX error fetching timer:', error);
-                                    updatePatientTimer(1200);
-                                });
-                            } else if (action === 'treated') {
-                                alert('Patient treated! Moving to next.');
-                                location.reload(); // Reload the page to update the UI
-                            } else if (action === 'skip') {
-                                alert('Patient skipped! Swapping with next.');
-                                location.reload();
-                            }
-    
-                            fetchWaitingTimes();
-                        } else {
-                            alert('Error: ' + response.error);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('An error occurred: ' + error);
-                    },
-                    complete: function() {
-                        if (action === 'add_time') {
-                            isAddingTime = false;
-                        }
-                    }
-                });
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error fetching timer:', error);
+                updatePatientTimer(1200);
             });
-    
-            function fetchUpdatedTimer() {
-                $.get("{% url 'fetch_patient_timer' %}", function(data) {
-                    if (data.success) {
-                        updatePatientTimer(data.current_patient_timer);
+        }
+
+        var sessionStarted = '{{ session_started|lower }}' === 'true';
+        var currentPatientExists = '{{ current_patient|default:"" }}' !== '';
+
+        if (sessionStarted && currentPatientExists) {
+            initializeTimer();
+        }
+
+        function fetchWaitingTimes() {
+            $.get("{% url 'fetch_wait_times' %}?format=minutes", function(data) {
+                if (data.success && data.wait_times) {
+                    data.wait_times.forEach(function(entry) {
+                        let waitTimeElement = $("#wait-time-" + entry.id);
+                        if (waitTimeElement.length) {
+                            waitTimeElement.text(Math.max(0, entry.wait_time) + " min");
+                        }
+                        let statusElement = $("#status-" + entry.id);
+                        if (statusElement.length) {
+                            statusElement.text(entry.status);
+                        }
+                    });
+                } else {
+                    console.error('No wait_times data received:', data);
+                }
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error fetching wait times:', error);
+            });
+        }
+        setInterval(fetchWaitingTimes, 1000); // Update every second
+
+        function updateQueueTable() {
+            $.get("{% url 'fetch_wait_times' %}?format=minutes", function(data) {
+                if (data.success && data.wait_times) {
+                    let tbody = $('#queueTableBody');
+                    let currentRows = tbody.find('tr');
+                    let currentRowIds = currentRows.map(function() { return $(this).data('id'); }).get();
+
+                    // Clear the table body
+                    tbody.empty();
+
+                    data.wait_times.forEach(function(entry) {
+                        let row = `
+                            <tr data-id="${entry.id}">
+                                <td>${entry.queue_position}</td>
+                                <td>${entry.patient_name}</td>
+                                <td>${entry.time}</td>
+                                <td id="wait-time-${entry.id}">${Math.max(0, entry.wait_time)} min</td>
+                                <td id="status-${entry.id}">${entry.status}</td>
+                                <td>
+                                    ${entry.id === currentPatientId ? '' : '<button class="action-btn skip-btn" data-id="${entry.id}" data-action="skip">Skip</button>'}
+                                </td>
+                            </tr>`;
+                        tbody.append(row);
+                    });
+                }
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error updating queue table:', error);
+            });
+        }
+
+        function checkSessionStatus() {
+            $.get("{% url 'fetch_session_status' %}", function(data) {
+                if (data.success) {
+                    if (!data.is_active) {
+                        location.reload();
                     } else {
-                        console.error('Failed to fetch timer:', data.error);
-                        updatePatientTimer(1200);
+                        var newPatientId = data.current_patient_id || '';
+                        if (newPatientId && newPatientId !== currentPatientId) {
+                            currentPatientId = newPatientId;
+                            updatePatientTimer(1200); // Reset to 20 minutes for new patient
+                            fetchWaitingTimes();
+                            $.get("{% url 'fetch_wait_times' %}?format=minutes", function(data) {
+                                if (data.success && data.wait_times && data.wait_times.length > 0) {
+                                    let newPatient = data.wait_times.find(wt => wt.id == newPatientId);
+                                    if (newPatient) {
+                                        $('#currentPatientName').text(`Current Patient: ${newPatient.patient_name}`);
+                                    }
+                                }
+                            }).fail(function(xhr, status, error) {
+                                console.error('AJAX error fetching patient name:', error);
+                            });
+                            updateQueueTable();
+                        }
                     }
-                }).fail(function(xhr, status, error) {
-                    console.error('AJAX error fetching timer:', error);
-                    updatePatientTimer(1200);
-                });
+                } else {
+                    console.error('Failed to fetch session status:', data.error);
+                }
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error fetching session status:', error);
+            });
+        }
+        setInterval(checkSessionStatus, 5000);
+
+        $(document).on('click', '.action-btn', function(e) {
+            e.preventDefault();
+            var appointmentId = $(this).data('id');
+            var action = $(this).data('action');
+
+            if (action === 'add_time' && isAddingTime) {
+                return;
             }
-            setInterval(fetchUpdatedTimer, 5000); // Update timer every 5 seconds
+
+            $.ajax({
+                url: '{% url "update_queue_status" %}',
+                method: 'POST',
+                data: {
+                    appointment_id: appointmentId,
+                    action: action,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                beforeSend: function() {
+                    if (action === 'add_time') {
+                        isAddingTime = true;
+                    }
+                },
+                success: function(response) {
+                    if (response.success) {
+                        if (action === 'add_time') {
+                            updatePatientTimer(response.patient_timer); // Update timer with new value
+                            fetchWaitingTimes(); // Refresh wait times
+                            updateQueueTable(); // Refresh the queue table
+                        } else if (action === 'treated' || action === 'skip') {
+                            if (response.next_patient_id) {
+                                currentPatientId = response.next_patient_id;
+                                updatePatientTimer(response.patient_timer);
+                                $('#currentPatientName').text(`Current Patient: ${response.next_patient_name}`);
+                                fetchWaitingTimes();
+                                updateQueueTable();
+                            } else {
+                                location.reload();
+                            }
+                        }
+                        fetchWaitingTimes();
+                        updateQueueTable();
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                },
+                complete: function() {
+                    if (action === 'add_time') {
+                        isAddingTime = false;
+                    }
+                }
+            });
         });
-    </script>
+
+        function fetchUpdatedTimer() {
+            $.get("{% url 'fetch_patient_timer' %}", function(data) {
+                if (data.success) {
+                    updatePatientTimer(data.current_patient_timer);
+                } else {
+                    console.error('Failed to fetch timer:', data.error);
+                    updatePatientTimer(1200);
+                }
+            }).fail(function(xhr, status, error) {
+                console.error('AJAX error fetching timer:', error);
+                updatePatientTimer(1200);
+            });
+        }
+        setInterval(fetchUpdatedTimer, 5000);
+    });
+</script>
     <!-- changingnow -->
     <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91e035fcf94fbad4',t:'MTc0MTU4MjQzMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-</body>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'938f1c05298c06f6',t:'MTc0NjEwMDczMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93906454cf6b53c3',t:'MTc0NjExNDE3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'939085e7ad84458f',t:'MTc0NjExNTU1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

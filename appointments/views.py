@@ -60,7 +60,6 @@ def manual_booking(request):
         # Create or update Patient instance
         try:
             patient = Patient.objects.get(email=email)
-            # If the patient's name or phone doesn't match, update it
             if patient.name != name or patient.phone != contact:
                 patient.name = name
                 patient.phone = contact
@@ -216,6 +215,16 @@ def virtual_waiting_room(request):
         else:
             session_started = True
 
+            # Calculate initial wait times for rendering
+            for appt in appointments:
+                if appt != current_patient:
+                    adjusted_position = appt.queue_position
+                    if adjusted_position <= 0:
+                        continue
+                    appt.live_wait_time = adjusted_position * 20
+                else:
+                    appt.live_wait_time = 0
+
     if request.method == 'POST' and 'filter_queue' in request.POST:
         queue_form = QueueFilterForm(request.POST)
         if queue_form.is_valid():
@@ -359,18 +368,24 @@ def virtual_waiting_room(request):
                 if appointments.exists():
                     next_patient = appointments.first()
                     active_session.current_patient = next_patient
-                    active_session.patient_timer = 1200
+                    active_session.patient_timer = 1200  # Force reset to 20 minutes
                     active_session.save()
+                    return JsonResponse({
+                        'success': True,
+                        'next_patient_id': next_patient.id,
+                        'next_patient_name': next_patient.patient_name,
+                        'patient_timer': 1200
+                    })
                 else:
                     active_session.is_active = False
                     active_session.end_time = timezone.now()
                     active_session.duration_minutes = (active_session.end_time - active_session.start_time).total_seconds() // 60
                     active_session.save()
-
-                return redirect('virtual_waiting_room')
+                    return JsonResponse({'success': True, 'next_patient_id': None})
             except Exception as e:
                 logger.error(f"Error processing treated patient: {str(e)}")
                 error = "Error processing treated patient."
+                return JsonResponse({'success': False, 'error': str(e)})
 
     if request.method == 'POST' and 'end_session' in request.POST:
         active_session = SessionHistory.objects.filter(is_active=True).first()
@@ -412,94 +427,69 @@ def virtual_waiting_room(request):
 @login_required
 @csrf_exempt
 def update_queue_status(request):
-    if request.method == 'POST':
-        appointment_id = request.POST.get('appointment_id')
-        action = request.POST.get('action')
+    if request.method == "POST":
+        appointment_id = request.POST.get("appointment_id")
+        action = request.POST.get("action")
+        active_session = SessionHistory.objects.filter(is_active=True).first()
+
+        if not active_session or not appointment_id or not action:
+            return JsonResponse({"success": False, "error": "Invalid request data or no active session"})
 
         try:
-            appointment = get_object_or_404(Appointment, id=appointment_id)
-            active_session = SessionHistory.objects.filter(is_active=True).first()
-
-            if request.user.role != 'desk':
-                return JsonResponse({'success': False, 'error': 'Only desk users can update the queue.'})
-
-            if not active_session:
-                return JsonResponse({'success': False, 'error': 'No active session found.'})
-
-            doctor = active_session.doctor
-            date = active_session.date
-            slot = active_session.slot
-
-            all_appointments = list(Appointment.objects.filter(
-                doctor=doctor, date=date, time__startswith=slot, status='Pending'
-            ).order_by('queue_position'))
-
-            current_patient_id = active_session.current_patient.id if active_session.current_patient else None
-
-            if action == 'add_time':
-                # Validate that the appointment is still the current patient
-                if str(current_patient_id) != str(appointment_id):
-                    return JsonResponse({'success': False, 'error': 'This patient is no longer the current patient.'})
-                current_timer = active_session.patient_timer or 1200
-                if current_timer < 3000:
-                    updated_timer = current_timer + 300
-                    active_session.patient_timer = updated_timer
-                    active_session.save()
-                else:
-                    return JsonResponse({'success': False, 'error': 'Timer cannot exceed 50 minutes'})
-                return JsonResponse({
-                    'success': True,
-                    'current_patient_timer': updated_timer,
-                    'action': 'add_time'
-                })
-
-            elif action == 'treated' and str(current_patient_id) == str(appointment_id):
-                appointment.status = 'Treated'
-                appointment.save()
-
-                next_patient = next((appt for appt in all_appointments if appt.id != appointment.id), None)
-
-                if next_patient:
+            appointment = Appointment.objects.get(id=appointment_id)
+            if action == "treated":
+                active_session.current_patient = None
+                active_session.patient_timer = 1200  # Reset to 20 minutes
+                if Appointment.objects.filter(doctor=active_session.doctor, date=active_session.date, time__startswith=active_session.slot, status='Pending').exists():
+                    next_patient = Appointment.objects.filter(
+                        doctor=active_session.doctor, date=active_session.date, time__startswith=active_session.slot, status='Pending'
+                    ).order_by('queue_position').first()
                     active_session.current_patient = next_patient
-                    active_session.patient_timer = 1200
-                    active_session.save()
-                    return JsonResponse({
-                        'success': True,
-                        'next_patient': next_patient.id,
-                        'next_patient_name': next_patient.patient_name
-                    })
+                    active_session.patient_timer = 1200  # Reset for new patient
+                    next_patient_name = next_patient.patient_name
                 else:
-                    active_session.is_active = False
-                    active_session.end_time = timezone.now()
-                    active_session.duration_minutes = (active_session.end_time - active_session.start_time).total_seconds() // 60
-                    active_session.save()
-                    return JsonResponse({'success': True, 'next_patient': None})
-
-            elif action == 'skip':
-                for i, appt in enumerate(all_appointments):
-                    if appt.id == appointment.id:
-                        if i + 1 < len(all_appointments):
-                            next_patient = all_appointments[i + 1]
-                            appointment.queue_position, next_patient.queue_position = next_patient.queue_position, appointment.queue_position
-                            appointment.save()
-                            next_patient.save()
-                            remaining_appointments = Appointment.objects.filter(
-                                doctor=doctor, date=date, time__startswith=slot, status='Pending'
-                            ).order_by('queue_position')
-                            for i, appt in enumerate(remaining_appointments, start=1):
-                                appt.queue_position = i
-                                appt.save()
-                            return JsonResponse({'success': True, 'skipped': True})
-                        break
-                return JsonResponse({'success': False, 'error': 'Cannot skip last patient.'})
-
-            return JsonResponse({'success': False, 'error': 'Invalid action'})
-
+                    next_patient_name = None
+                appointment.status = "Treated"
+                appointment.save()
+                active_session.save()
+                return JsonResponse({
+                    "success": True,
+                    "next_patient_id": active_session.current_patient.id if active_session.current_patient else None,
+                    "next_patient_name": next_patient_name,
+                    "patient_timer": active_session.patient_timer
+                })
+            elif action == "skip":
+                appointment.status = "Skipped"
+                appointment.save()
+                if Appointment.objects.filter(doctor=active_session.doctor, date=active_session.date, time__startswith=active_session.slot, status='Pending').exists():
+                    next_patient = Appointment.objects.filter(
+                        doctor=active_session.doctor, date=active_session.date, time__startswith=active_session.slot, status='Pending'
+                    ).order_by('queue_position').first()
+                    active_session.current_patient = next_patient
+                    active_session.patient_timer = 1200  # Reset for new patient
+                    next_patient_name = next_patient.patient_name
+                else:
+                    next_patient_name = None
+                active_session.save()
+                return JsonResponse({
+                    "success": True,
+                    "next_patient_id": active_session.current_patient.id if active_session.current_patient else None,
+                    "next_patient_name": next_patient_name,
+                    "patient_timer": active_session.patient_timer
+                })
+            elif action == "add_time":
+                active_session.patient_timer = active_session.patient_timer + 300  # Add 5 minutes (300 seconds), no cap
+                active_session.save()
+                return JsonResponse({
+                    "success": True,
+                    "patient_timer": active_session.patient_timer
+                })
+        except Appointment.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Appointment not found"})
         except Exception as e:
-            logger.error(f"Error in update_queue_status: {str(e)}")
-            return JsonResponse({'success': False, 'error': str(e)})
+            return JsonResponse({"success": False, "error": str(e)})
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    return JsonResponse({"success": False, "error": "Invalid method"})
 
 @login_required
 def fetch_patient_timer(request):
@@ -527,101 +517,72 @@ def save_patient_timer(request):
             return JsonResponse({"success": True, "saved_time": remaining_time})
         else:
             return JsonResponse({"success": False, "error": "No active session to save timer."})
-    return JsonResponse({"success": False, "error": "Invalid request method"})
+    return JsonResponse({"success": False, "error": 'Invalid request method'})
 
 @login_required
 def fetch_wait_times(request):
-    user = request.user
     active_session = SessionHistory.objects.filter(is_active=True).first()
     wait_times = []
     time_format = request.GET.get('format', 'seconds')
-
-    user_appointments = Appointment.objects.filter(user=user).order_by('date', 'time')
 
     if active_session:
         doctor = active_session.doctor
         date = active_session.date
         slot = active_session.slot
         current_patient_timer = active_session.patient_timer
+        current_patient_id = active_session.current_patient.id if active_session.current_patient else None
 
         try:
             adjusted_slots = doctor.get_adjusted_slots(date)
             if slot not in adjusted_slots:
                 slot += ':00'
             session_appointments = Appointment.objects.filter(
-                doctor=doctor, date=date, time__startswith=slot, status='Pending'
+                doctor=doctor,
+                date=date,
+                time__startswith=slot,
+                status='Pending'
             ).order_by('queue_position')
 
+            session_data = {
+                'doctor_id': doctor.id,
+                'date': date.strftime('%Y-%m-%d'),
+                'slot': slot,
+                'patient_timer': current_patient_timer,  # Include the live timer
+                'current_patient_id': current_patient_id
+            }
+
             for appt in session_appointments:
-                wait_time_minutes = appt.calculate_live_wait_time({
-                    'doctor_id': doctor.id,
-                    'date': date.strftime('%Y-%m-%d'),
-                    'slot': slot,
-                    'patient_timer': current_patient_timer
-                })  
+                # Calculate wait time based on queue position and current patient's timer
+                if appt.id == current_patient_id:
+                    # Current patient: wait time is the remaining timer
+                    wait_time_minutes = max(0, current_patient_timer / 60)
+                else:
+                    # Subsequent patients: wait time is current patient's timer + (position - 1) * 20 minutes
+                    position = appt.queue_position
+                    if position <= 1:
+                        wait_time_minutes = 0  # Shouldn't happen since current patient is handled above
+                    else:
+                        # Use the actual current patient timer instead of a fixed 20 minutes
+                        wait_time_minutes = max(0, (current_patient_timer / 60) + (position - 2) * 20)
 
                 if time_format == 'seconds':
-                    wait_time = int(wait_time_minutes * 60)  
+                    wait_time = int(wait_time_minutes * 60)
                 else:
-                    wait_time = int(wait_time_minutes) 
+                    wait_time = int(wait_time_minutes)
 
-                last_wait_time = getattr(appt, 'last_wait_time', None)
-                if not hasattr(appt, 'last_wait_time'):
-                    appt.last_wait_time = wait_time_minutes  
-                wait_time_change = abs(appt.last_wait_time - wait_time_minutes)
-
-                current_time = timezone.now()
-                last_email_time = appt.last_email_sent or (current_time - timedelta(minutes=6))
-                time_since_last_email = (current_time - last_email_time).total_seconds() / 60
-
-                if (wait_time_change >= 5 or appt.queue_position == 1) and time_since_last_email >= 5:
-                    send_session_notification(
-                        appointments=[appt],
-                        subject="Updated Wait Time for Your Appointment",
-                        message=f"Your wait time for your appointment with Dr. {doctor.name} has been updated.",
-                        include_wait_time=True
-                    )
-                    appt.last_email_sent = current_time
-                    appt.save()
-
-                appt.last_wait_time = wait_time_minutes  
                 wait_times.append({
                     "id": appt.id,
-                    "wait_time": wait_time,  
-                    "status": appt.status
+                    "wait_time": wait_time,
+                    "status": appt.status,
+                    "patient_name": appt.patient_name,
+                    "time": appt.time.strftime('%H:%M'),
+                    "queue_position": appt.queue_position
                 })
         except Doctor.DoesNotExist as e:
             logger.error(f"Doctor not found in fetch_wait_times: {str(e)}")
 
-    session_data = {
-        'doctor_id': active_session.doctor.id if active_session else None,
-        'date': active_session.date.strftime('%Y-%m-%d') if active_session else None,
-        'slot': active_session.slot if active_session else None,
-        'patient_timer': active_session.patient_timer if active_session else 1200
-    } if active_session else {}
-
-    for appt in user_appointments:
-        if any(wt["id"] == appt.id for wt in wait_times):
-            continue
-
-        live_wait_minutes = 0
-        if appt.status == 'Pending':
-            live_wait_minutes = appt.calculate_live_wait_time(session_data)  # In minutes
-        
-        if time_format == 'seconds':
-            live_wait = int(live_wait_minutes * 60)  
-        else:
-            live_wait = int(live_wait_minutes) 
-
-        wait_times.append({
-            "id": appt.id,
-            "wait_time": live_wait,  
-            "status": appt.status
-        })
-
-    logger.info(f"Fetch wait times response: {wait_times}")
-    return JsonResponse({"wait_times": wait_times})
-
+    return JsonResponse({"success": True, "wait_times": wait_times})
+    
 @login_required
 def adjust_doctor_slot(request):
     if request.user.role != 'desk':
@@ -680,8 +641,7 @@ def send_session_notification(appointments, subject, message, include_wait_time=
         except Exception as e:
             logger.error(f"Failed to send email to {appointment.patient_email}: {str(e)}")
 
-# for docotr Dashboard
-
+# for doctor Dashboard
 @login_required
 def fetch_session_status(request):
     if request.user.role != 'doctor':
