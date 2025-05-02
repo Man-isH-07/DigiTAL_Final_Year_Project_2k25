@@ -1,6 +1,6 @@
 # DigiTAL: AI-Driven Hospital Management System
 
-![DigiTAL Logo](https://via.placeholder.com/150x50.png?text=DigiTAL)  
+![DigiTAL Logo](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/logo.png)  
 *Revolutionizing Healthcare with AI and Blockchain*
 
 Welcome to **DigiTAL**, a cutting-edge Digital Hospital Management System (HMS) designed to enhance hospital efficiency, patient care, and data security. Developed as a Bachelor of Engineering project at Sipna College of Engineering and Technology, Amravati, this system integrates **Artificial Intelligence (AI)** and **Blockchain Technology** to address challenges like long waiting times, insecure data management, and inefficient workflows.  
@@ -52,7 +52,7 @@ DigiTAL follows a multi-layered, modular architecture:
 - **Blockchain Module**: Ganache and Solidity for secure data storage.
 - **Real-time Features**: WebSockets for queue updates and notifications via Twilio/SendGrid.
 
-![System Overview](https://via.placeholder.com/600x300.png?text=System+Architecture)
+![System Overview](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Flowcharts/sysOverview.png)
 
 ---
 
@@ -76,13 +76,13 @@ Below are the core technologies powering DigiTAL, along with their logos:
 ## Screenshots
 Below are key screenshots from the DigiTAL system, showcasing its user interfaces:
 
-| **Login Page** | **User Dashboard** | **AI Chatbot** |
-|----------------|---------------------|----------------|
-| ![Login Page](https://via.placeholder.com/300x200.png?text=Login+Page) | ![User Dashboard](https://via.placeholder.com/300x200.png?text=User+Dashboard) | ![AI Chatbot](https://via.placeholder.com/300x200.png?text=AI+Chatbot) |
+|**Landing Page** | **Login Page** | **User Dashboard** | **AI Chatbot** |
+|----------------|---------------------|----------------|----------------|
+| ![Landing Page](https://via.placeholder.com/300x200.png?text=Login+Page) | ![Login Page](https://via.placeholder.com/300x200.png?text=Login+Page) | ![User Dashboard](https://via.placeholder.com/300x200.png?text=User+Dashboard) | ![AI Chatbot](https://via.placeholder.com/300x200.png?text=AI+Chatbot) |
 
-| **Virtual Waiting Room** | **Doctor Dashboard** | **Blockchain Dashboard** |
-|---------------------------|-----------------------|---------------------------|
-| ![Virtual Waiting Room](https://via.placeholder.com/300x200.png?text=Virtual+Waiting+Room) | ![Doctor Dashboard](https://via.placeholder.com/300x200.png?text=Doctor+Dashboard) | ![Blockchain Dashboard](https://via.placeholder.com/300x200.png?text=Blockchain+Dashboard) |
+| **Virtual Waiting Room** | **Doctor Dashboard** | **Blockchain Dashboard** | **Lab Dashboard** |
+|---------------------------|-----------------------|---------------------------|---------------------------|
+| ![Virtual Waiting Room](https://via.placeholder.com/300x200.png?text=Virtual+Waiting+Room) | ![Doctor Dashboard](https://via.placeholder.com/300x200.png?text=Doctor+Dashboard) | ![Blockchain Dashboard](https://via.placeholder.com/300x200.png?text=Blockchain+Dashboard) | ![Lab Dashboard](https://via.placeholder.com/300x200.png?text=Blockchain+Dashboard) |
 
 ---
 
