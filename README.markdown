@@ -1,5 +1,4 @@
 # DigiTAL: AI-Driven Hospital Management System
-
 ![DigiTAL Logo](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/logo.png)  
 *Revolutionizing Healthcare with AI and Blockchain*
 
@@ -78,11 +77,11 @@ Below are key screenshots from the DigiTAL system, showcasing its user interface
 
 |**Landing Page** | **Login Page** | **User Dashboard** | **AI Chatbot** |
 |----------------|---------------------|----------------|----------------|
-| ![Landing Page](https://via.placeholder.com/300x200.png?text=Login+Page) | ![Login Page](https://via.placeholder.com/300x200.png?text=Login+Page) | ![User Dashboard](https://via.placeholder.com/300x200.png?text=User+Dashboard) | ![AI Chatbot](https://via.placeholder.com/300x200.png?text=AI+Chatbot) |
+| ![Landing Page](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/landing_page.png) | ![Login Page](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/login.png) | ![User Dashboard](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/user_dashboard.png) | ![AI Chatbot](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/ai_chatbot.png) |
 
 | **Virtual Waiting Room** | **Doctor Dashboard** | **Blockchain Dashboard** | **Lab Dashboard** |
 |---------------------------|-----------------------|---------------------------|---------------------------|
-| ![Virtual Waiting Room](https://via.placeholder.com/300x200.png?text=Virtual+Waiting+Room) | ![Doctor Dashboard](https://via.placeholder.com/300x200.png?text=Doctor+Dashboard) | ![Blockchain Dashboard](https://via.placeholder.com/300x200.png?text=Blockchain+Dashboard) | ![Lab Dashboard](https://via.placeholder.com/300x200.png?text=Blockchain+Dashboard) |
+| ![Virtual Waiting Room](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/virtual_waiting_room.png) | ![Doctor Dashboard](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/docotr_dashboard.png) | ![Blockchain Dashboard](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/blockchain_dashboard.png) | ![Lab Dashboard](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/Screenshots/lab_dashboard.png) |
 
 ---
 
@@ -121,7 +120,7 @@ Follow these steps to set up DigiTAL locally:
 
 5. **Start Ganache CLI**:
    ```bash
-   ganache-cli -p 8545 -m "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat"
+   ganache-cli -p 8545 -m "candy cream honey rich smooth crumble sweet treat"
    ```
 
 6. **Run the Django Server**:
@@ -144,7 +143,8 @@ Follow these steps to set up DigiTAL locally:
 
 ## PPT Presentation
 The project's PowerPoint presentation is available on GitHub:  
-📎 [DigiTAL Presentation](https://github.com/your-username/digital-hms/blob/main/docs/DigiTAL-fyp_PPT.pptx)
+📎 [DigiTAL Presentation](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/DigiTAL%20-%20fyp_PPT.pptx)  
+![PowerPoint](https://img.shields.io/badge/PowerPoint-B7472A?style=flat&logo=microsoft-powerpoint&logoColor=white)
 
 **PPT Highlights**:
 - Introduction to DigiTAL and its problem statement
@@ -167,12 +167,12 @@ DigiTAL has immense potential for further enhancements:
 ---
 
 ## Contributors
-- **Anushka P. Tayade**
+- **Manish P. Dhaye**  
 - **Prachi P. Ghatole**
+- **Anushka P. Tayade**
 - **Mandar G. Chatur**
 - **Pravesh C. Mhaiskar**
-- **Manish P. Dhaye**  
-*Guided by*: **Prof. Neha G. Rathi**
+- ***Guided by*: **Prof. Neha G. Rathi****
 
 ---
 
