@@ -1,5 +1,4 @@
 # Final Year Project ( 2024 - 2025)
-
 # DigiTAL: Enhancing Hospital Efficiency with AI-Driven Automation and Blockchain-Backed Data Management
 
 ![DigiTAL Logo](https://github.com/Man-isH-07/DHMS_Final_Year_Project_2k25/blob/master/Research%20Paper%20%26%20Thesis/logo.png)  
@@ -171,9 +170,12 @@ DigiTAL has immense potential for further enhancements:
 ---
 
 ## Contributors
-- **Manish Prakashrao Dhaye**      - **Mandar Gajanan Chatur**
-- **Prachi Prashant Ghatole**      - **Anushka Prakashrao Tayade**
-- **Pravesh Chandrashekhar Mhaiskar**  - ***Guided by*: **Prof. Neha Gopal Rathi****
+- **Manish Prakashrao Dhaye**
+- **Prachi Prashant Ghatole**
+- **Anushka Prakashrao Tayade**
+- **Mandar Gajanan Chatur**
+- **Pravesh Chandrashekhar Mhaiskar**  
+- ***Guided by*: **Prof. Neha Gopal Rathi****
 
 ---
 
